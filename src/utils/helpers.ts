@@ -13,6 +13,8 @@ const deptStyles: Record<string, DeptStyle> = {
   Operations: { color: 'var(--dept-operations)', bg: 'var(--dept-operations-bg)' },
   Design: { color: 'var(--dept-design)', bg: 'var(--dept-design-bg)' },
   Security: { color: 'var(--dept-security)', bg: 'var(--dept-security-bg)' },
+  Engineering: { color: 'var(--dept-engineering)', bg: 'var(--dept-engineering-bg)' },
+  Support: { color: 'var(--dept-support)', bg: 'var(--dept-support-bg)' },
 };
 
 export function getDeptStyle(department: string): DeptStyle {

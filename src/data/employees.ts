@@ -194,4 +194,51 @@ export const defaultEmployees: Employee[] = [
     peripherals: { keyboardBrand: 'Corsair K100 RGB', mouseBrand: 'Razer DeathAdder V3', monitor: 'Dell U3223QE 32"' },
     system: { motherboardSn: 'MB-SN-ASUS-Z790E-08', biosSerialNumber: 'BIOS-SN-N6RQ9U08', osVersion: 'Windows 11 Pro 23H2' },
   },
+  {
+    id: '9',
+    name: 'Maya Patel',
+    initials: 'MP',
+    department: 'Engineering',
+    username: 'mpatel',
+    omadaUsername: 'mpatel@company.local',
+    avatarColor: '#0EA5E9',
+    dateAsOf: '2026-05-21',
+    cpu: { model: 'Intel Core Ultra 7 265K', cores: 20 },
+    ram: [
+      { serialNumber: 'RAM-SN-00Q7R8', model: 'Kingston Fury DDR5', speed: '5600 MHz', totalMemory: '16 GB' },
+      { serialNumber: 'RAM-SN-00Q7R9', model: 'Kingston Fury DDR5', speed: '5600 MHz', totalMemory: '16 GB' },
+    ],
+    gpu: [
+      { serial: 'GPU-SN-4060-X9', manufacturer: 'NVIDIA', model: 'RTX 4060', ram: '8 GB' },
+    ],
+    storage: [
+      { serialNumber: 'SSD-SN-SAM09', type: 'NVMe SSD', capacity: '1 TB' },
+    ],
+    network: { hostname: 'ENG-PC-12', macAddress: 'AA:BB:CC:11:22:09', dhcp: true, currentIp: '192.168.2.112', portNumber: 'SW2-P12' },
+    peripherals: { keyboardBrand: 'Logitech MX Mechanical', mouseBrand: 'Logitech MX Master 3S', monitor: 'Dell U2723QE 27"' },
+    system: { motherboardSn: 'MB-SN-ASUS-Z890-09', biosSerialNumber: 'BIOS-SN-P7ST0V09', osVersion: 'Windows 11 Pro 24H2' },
+  },
+  {
+    id: '10',
+    name: 'Omar Hassan',
+    initials: 'OH',
+    department: 'Support',
+    username: 'ohassan',
+    omadaUsername: 'ohassan@company.local',
+    avatarColor: '#14B8A6',
+    dateAsOf: '2026-05-21',
+    cpu: { model: 'AMD Ryzen 5 7600', cores: 6 },
+    ram: [
+      { serialNumber: 'RAM-SN-00S9T0', model: 'Crucial Pro DDR5', speed: '5600 MHz', totalMemory: '16 GB' },
+    ],
+    gpu: [
+      { serial: 'GPU-SN-ARC-X10', manufacturer: 'Intel', model: 'Arc A580', ram: '8 GB' },
+    ],
+    storage: [
+      { serialNumber: 'SSD-SN-WD10', type: 'SATA SSD', capacity: '512 GB' },
+    ],
+    network: { hostname: 'SUP-PC-06', macAddress: 'AA:BB:CC:11:22:10', dhcp: true, currentIp: '192.168.4.106', portNumber: 'SW4-P18' },
+    peripherals: { keyboardBrand: 'Dell KB522', mouseBrand: 'Dell MS3220', monitor: 'AOC 24B2XH 24"' },
+    system: { motherboardSn: 'MB-SN-GIGABYTE-B650-10', biosSerialNumber: 'BIOS-SN-Q8TU1W10', osVersion: 'Windows 11 Pro 23H2' },
+  },
 ];

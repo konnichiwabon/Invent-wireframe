@@ -34,65 +34,84 @@ export default function InventoryCard({ employee, index, onViewSpecs, onEdit }: 
         </div>
         <div className="card-info">
           <div className="card-name">{employee.name}</div>
-          <span
-            className="dept-badge"
-            style={{ background: deptStyle.bg, color: deptStyle.color }}
-          >
-            {employee.department}
-          </span>
-          <span className="pc-id">{employee.network.hostname}</span>
+          <div className="card-meta">
+            <span
+              className="dept-badge"
+              style={{ background: deptStyle.bg, color: deptStyle.color }}
+            >
+              {employee.department}
+            </span>
+            <span className="pc-id">{employee.network.hostname}</span>
+          </div>
         </div>
       </div>
 
       {/* User Info */}
       <div className="spec-section">
         <div className="spec-title">
-          <span className="spec-title-icon">👤</span> User
+          <span className="spec-title-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="12" cy="8" r="4" />
+              <path d="M20 20a8 8 0 0 0-16 0" />
+            </svg>
+          </span>
+          <span>USER</span>
         </div>
         <div className="spec-row">
-          <span className="spec-label">Username</span>
-          <span className="spec-value">{employee.username}</span>
+          <span className="spec-label">Email</span>
+          <span className="spec-value spec-value-small">{employee.omadaUsername}</span>
         </div>
         <div className="spec-row">
           <span className="spec-label">Omada</span>
-          <span className="spec-value spec-value-small">{employee.omadaUsername}</span>
+          <span className="spec-value">{employee.username}</span>
         </div>
       </div>
 
       {/* Hardware */}
       <div className="spec-section">
         <div className="spec-title">
-          <span className="spec-title-icon">🖥️</span> Hardware
+          <span className="spec-title-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+              <rect x="9" y="9" width="6" height="6" rx="1" />
+              <path d="M4 9h2M4 15h2M18 9h2M18 15h2M9 4v2M15 4v2M9 18v2M15 18v2" />
+            </svg>
+          </span>
+          <span>HARDWARE</span>
         </div>
         <div className="spec-row">
           <span className="spec-label">CPU</span>
           <span className="spec-value">{employee.cpu.model.split(' ').slice(0, 3).join(' ')}</span>
         </div>
         <div className="spec-row">
-          <span className="spec-label">Cores</span>
-          <span className="spec-value">{employee.cpu.cores}</span>
-        </div>
-        <div className="spec-row">
           <span className="spec-label">RAM</span>
           <span className="spec-value">
             {totalRam} GB
-            {employee.ram.length > 1 && <span className="count-badge">{employee.ram.length} sticks</span>}
+            {employee.ram.length > 1 && (
+              <span className="count-badge">{employee.ram.length} sticks</span>
+            )}
           </span>
         </div>
         <div className="spec-row">
           <span className="spec-label">GPU</span>
-          <span className="spec-value">
-            {primaryGpu?.model || '—'}
-            {employee.gpu.length > 1 && <span className="count-badge">{employee.gpu.length} cards</span>}
-          </span>
+          <span className="spec-value">{primaryGpu?.model || '—'}</span>
+        </div>
+        <div className="spec-row">
+          <span className="spec-label">VRAM</span>
+          <span className="spec-value">{primaryGpu?.ram || '—'}</span>
         </div>
       </div>
 
       {/* Storage */}
       <div className="spec-section">
         <div className="spec-title">
-          <span className="spec-title-icon">💾</span> Storage
-          {employee.storage.length > 1 && <span className="count-badge">{employee.storage.length} drives</span>}
+          <span className="spec-title-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+              <ellipse cx="12" cy="5" rx="9" ry="3" />
+              <path d="M3 5v6c0 1.7 4 3 9 3s9-1.3 9-3V5" />
+              <path d="M3 11v6c0 1.7 4 3 9 3s9-1.3 9-3v-6" />
+            </svg>
+          </span>
+          <span>STORAGE</span>
         </div>
         {primaryStorage && (
           <>
@@ -104,7 +123,7 @@ export default function InventoryCard({ employee, index, onViewSpecs, onEdit }: 
             </div>
             <div className="spec-row">
               <span className="spec-label">Capacity</span>
-              <span className="spec-value">{primaryStorage.capacity}</span>
+              <span className="storage-badge capacity">{primaryStorage.capacity}</span>
             </div>
           </>
         )}
@@ -113,7 +132,14 @@ export default function InventoryCard({ employee, index, onViewSpecs, onEdit }: 
       {/* Network */}
       <div className="spec-section">
         <div className="spec-title">
-          <span className="spec-title-icon">🌐</span> Network
+          <span className="spec-title-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M5 12.5a10 10 0 0 1 14 0" />
+              <path d="M8.5 16a5 5 0 0 1 7 0" />
+              <circle cx="12" cy="20" r="1" />
+            </svg>
+          </span>
+          <span>NETWORK</span>
         </div>
         <div className="spec-row">
           <span className="spec-label">IP</span>
