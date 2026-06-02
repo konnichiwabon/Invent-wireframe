@@ -1,5 +1,12 @@
 import { useState, useMemo, useCallback, useEffect } from "react";
 import type { Employee } from "./types/inventory";
+import {
+  createEmployee,
+  deleteEmployee,
+  fetchEmployees,
+  inventoryApiEnabled,
+  updateEmployee,
+} from "./api/inventoryApi";
 import { defaultEmployees } from "./data/employees";
 import { filterEmployees, getDepartments } from "./utils/helpers";
 import InventoryCard from "./components/InventoryCard";
@@ -31,7 +38,7 @@ const gridStyle = {
   padding: "1rem 0 2rem",
 };
 
-function loadEmployees(): Employee[] {
+function loadLocalEmployees(): Employee[] {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw) {
@@ -53,14 +60,16 @@ function loadEmployees(): Employee[] {
   return defaultEmployees;
 }
 
-function saveEmployees(employees: Employee[]) {
+function saveLocalEmployees(employees: Employee[]) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(employees));
 }
 
 type FormMode = { type: "add" } | { type: "edit"; employee: Employee } | null;
 
 function App() {
-  const [employees, setEmployees] = useState<Employee[]>(loadEmployees);
+  const [employees, setEmployees] = useState<Employee[]>(loadLocalEmployees);
+  const [isLoading, setIsLoading] = useState(inventoryApiEnabled);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [activeDept, setActiveDept] = useState("All");
   const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(
@@ -68,9 +77,43 @@ function App() {
   );
   const [formMode, setFormMode] = useState<FormMode>(null);
 
-  // Persist to localStorage on change
+useEffect(() => {
+    if (!inventoryApiEnabled) return;
+
+    let cancelled = false;
+
+    async function loadEmployeesFromApi() {
+      try {
+        setIsLoading(true);
+        setLoadError(null);
+        const apiEmployees = await fetchEmployees();
+        if (!cancelled) {
+          setEmployees(apiEmployees);
+        }
+      } catch (error) {
+        if (!cancelled) {
+          setLoadError(
+            error instanceof Error
+              ? `Using local cache because the backend is unavailable: ${error.message}`
+              : "Using local cache because the backend is unavailable",
+          );
+        }
+      } finally {
+        if (!cancelled) {
+          setIsLoading(false);
+        }
+      }
+    }
+
+    loadEmployeesFromApi();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   useEffect(() => {
-    saveEmployees(employees);
+    saveLocalEmployees(employees);
   }, [employees]);
 
   const departments = useMemo(() => getDepartments(employees), [employees]);
@@ -80,15 +123,65 @@ function App() {
     [employees, searchTerm, activeDept],
   );
 
-  const handleSave = useCallback((emp: Employee) => {
-    setEmployees((prev) => {
-      const exists = prev.find((e) => e.id === emp.id);
-      if (exists) {
-        return prev.map((e) => (e.id === emp.id ? emp : e));
+  const handleSave = useCallback(async (emp: Employee) => {
+    try {
+      const exists = employees.some((employee) => employee.id === emp.id);
+      let savedEmployee = emp;
+
+      if (inventoryApiEnabled) {
+        savedEmployee = exists ? await updateEmployee(emp) : await createEmployee(emp);
       }
-      return [...prev, emp];
-    });
-    setFormMode(null);
+
+      setEmployees((prev) => {
+        if (exists) {
+          return prev.map((employee) =>
+            employee.id === savedEmployee.id ? savedEmployee : employee,
+          );
+        }
+        return [...prev, savedEmployee];
+      });
+      setLoadError(null);
+      setFormMode(null);
+    } catch (error) {
+      const exists = employees.some((employee) => employee.id === emp.id);
+      setEmployees((prev) => {
+        if (exists) {
+          return prev.map((employee) =>
+            employee.id === emp.id ? emp : employee,
+          );
+        }
+        return [...prev, emp];
+      });
+      setFormMode(null);
+      setLoadError(
+        error instanceof Error
+          ? `Saved locally only. Backend sync failed: ${error.message}`
+          : "Saved locally only. Backend sync failed.",
+      );
+    }
+  }, [employees]);
+
+  const handleDelete = useCallback(async (emp: Employee) => {
+    const confirmed = window.confirm(`Delete ${emp.name}'s asset record?`);
+    if (!confirmed) return;
+
+    try {
+      if (inventoryApiEnabled) {
+        await deleteEmployee(emp.id);
+      }
+
+      setEmployees((prev) => prev.filter((employee) => employee.id !== emp.id));
+      setSelectedEmployee((selected) => selected?.id === emp.id ? null : selected);
+      setLoadError(null);
+    } catch (error) {
+      setEmployees((prev) => prev.filter((employee) => employee.id !== emp.id));
+      setSelectedEmployee((selected) => selected?.id === emp.id ? null : selected);
+      setLoadError(
+        error instanceof Error
+          ? `Deleted locally only. Backend sync failed: ${error.message}`
+          : "Deleted locally only. Backend sync failed.",
+      );
+    }
   }, []);
 
   return (
@@ -107,8 +200,18 @@ function App() {
           />
 
         {/* Card Grid */}
+          {loadError && (
+            <div className="no-results">
+              <div className="no-results-text">Local cache fallback active</div>
+              <div className="no-results-sub">{loadError}</div>
+            </div>
+          )}
           <div style={gridStyle}>
-        {filteredEmployees.length > 0 ? (
+        {isLoading ? (
+          <div className="no-results">
+            <div className="no-results-text">Loading assets...</div>
+          </div>
+        ) : filteredEmployees.length > 0 ? (
           filteredEmployees.map((emp, i) => (
             <InventoryCard
               key={emp.id}
@@ -116,6 +219,7 @@ function App() {
               index={i}
               onViewSpecs={setSelectedEmployee}
               onEdit={(e) => setFormMode({ type: "edit", employee: e })}
+              onDelete={handleDelete}
             />
           ))
         ) : (

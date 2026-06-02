@@ -6,9 +6,16 @@ interface InventoryCardProps {
   index: number;
   onViewSpecs: (employee: Employee) => void;
   onEdit: (employee: Employee) => void;
+  onDelete: (employee: Employee) => void;
 }
 
-export default function InventoryCard({ employee, index, onViewSpecs, onEdit }: InventoryCardProps) {
+export default function InventoryCard({
+  employee,
+  index,
+  onViewSpecs,
+  onEdit,
+  onDelete,
+}: InventoryCardProps) {
   const deptStyle = getDeptStyle(employee.department);
   const totalRam = employee.ram.reduce((sum, r) => {
     const num = parseFloat(r.totalMemory) || 0;
@@ -170,6 +177,16 @@ export default function InventoryCard({ employee, index, onViewSpecs, onEdit }: 
             <path d="m15 5 4 4"/>
           </svg>
           Edit
+        </button>
+        <button className="delete-btn" onClick={() => onDelete(employee)}>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M3 6h18" />
+            <path d="M8 6V4h8v2" />
+            <path d="M19 6l-1 14H6L5 6" />
+            <path d="M10 11v5" />
+            <path d="M14 11v5" />
+          </svg>
+          Delete
         </button>
       </div>
     </div>

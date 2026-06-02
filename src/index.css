@@ -625,7 +625,8 @@ body {
   margin-top: 0;
 }
 
-.edit-btn {
+.edit-btn,
+.delete-btn {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -642,7 +643,8 @@ body {
   transition: all var(--transition-fast);
 }
 
-.edit-btn svg {
+.edit-btn svg,
+.delete-btn svg {
   width: 13px;
   height: 13px;
 }
@@ -651,6 +653,12 @@ body {
   border-color: #fde68a;
   color: #b45309;
   background: #fffbeb;
+}
+
+.delete-btn:hover {
+  border-color: #fecaca;
+  color: #b91c1c;
+  background: #fef2f2;
 }
 
 /* Count Badge (e.g. "2 sticks") */

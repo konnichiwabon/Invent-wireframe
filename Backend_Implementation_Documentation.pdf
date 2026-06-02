@@ -1,0 +1,800 @@
+%PDF-1.3
+%ºß¬à
+3 0 obj
+<</Type /Page
+/Parent 1 0 R
+/Resources 2 0 R
+/MediaBox [0 0 595.2799999999999727 841.8899999999999864]
+/Contents 4 0 R
+>>
+endobj
+4 0 obj
+<<
+/Length 7066
+>>
+stream
+0.200025 w
+0 G
+BT
+/F2 20 Tf
+23. TL
+0.067 0.094 0.153 rg
+44. 793.8899999999999864 Td
+(FastAPI Backend Implementation) Tj
+ET
+BT
+/F1 9.5 Tf
+10.9249999999999989 TL
+0.42 0.447 0.502 rg
+44. 765.8899999999999864 Td
+(Inventory app backend created for the React frontend and PostgreSQL persistence.) Tj
+ET
+0.8 0.84 0.88 RG
+44. 745.8899999999999864 m
+551.2799999999999727 745.8899999999999864 l
+S
+BT
+/F2 13 Tf
+14.9499999999999993 TL
+0.067 0.094 0.153 rg
+44. 723.8899999999999864 Td
+(What Was Built) Tj
+ET
+BT
+/F1 9.5 Tf
+10.9249999999999989 TL
+0.216 0.255 0.318 rg
+44. 705.8899999999999864 Td
+(I added a separate FastAPI backend under the backend directory. It exposes the) Tj
+T* (asset API contract that the React frontend is already prepared to call through) Tj
+T* (VITE_API_BASE_URL.) Tj
+ET
+BT
+/F1 9.5 Tf
+10.9249999999999989 TL
+0.216 0.255 0.318 rg
+44. 659.8899999999999864 Td
+(-) Tj
+ET
+BT
+/F1 9.5 Tf
+10.9249999999999989 TL
+0.216 0.255 0.318 rg
+60. 659.8899999999999864 Td
+(Created a FastAPI application entry point at backend/app/main.py.) Tj
+ET
+BT
+/F1 9.5 Tf
+10.9249999999999989 TL
+0.216 0.255 0.318 rg
+44. 641.8899999999999864 Td
+(-) Tj
+ET
+BT
+/F1 9.5 Tf
+10.9249999999999989 TL
+0.216 0.255 0.318 rg
+60. 641.8899999999999864 Td
+(Added CORS configuration so the Vite frontend can call the API during development.) Tj
+ET
+BT
+/F1 9.5 Tf
+10.9249999999999989 TL
+0.216 0.255 0.318 rg
+44. 623.8899999999999864 Td
+(-) Tj
+ET
+BT
+/F1 9.5 Tf
+10.9249999999999989 TL
+0.216 0.255 0.318 rg
+60. 623.8899999999999864 Td
+(Added SQLAlchemy database setup with a PostgreSQL-ready DATABASE_URL.) Tj
+ET
+BT
+/F1 9.5 Tf
+10.9249999999999989 TL
+0.216 0.255 0.318 rg
+44. 605.8899999999999864 Td
+(-) Tj
+ET
+BT
+/F1 9.5 Tf
+10.9249999999999989 TL
+0.216 0.255 0.318 rg
+60. 605.8899999999999864 Td
+(Added an Asset SQLAlchemy model that stores the current nested inventory shape using JSON columns.) Tj
+ET
+BT
+/F1 9.5 Tf
+10.9249999999999989 TL
+0.216 0.255 0.318 rg
+44. 587.8899999999999864 Td
+(-) Tj
+ET
+BT
+/F1 9.5 Tf
+10.9249999999999989 TL
+0.216 0.255 0.318 rg
+60. 587.8899999999999864 Td
+(Added Pydantic schemas matching the frontend asset object shape.) Tj
+ET
+BT
+/F1 9.5 Tf
+10.9249999999999989 TL
+0.216 0.255 0.318 rg
+44. 569.8899999999999864 Td
+(-) Tj
+ET
+BT
+/F1 9.5 Tf
+10.9249999999999989 TL
+0.216 0.255 0.318 rg
+60. 569.8899999999999864 Td
+(Added CRUD functions for list, create, update, and delete behavior.) Tj
+ET
+BT
+/F1 9.5 Tf
+10.9249999999999989 TL
+0.216 0.255 0.318 rg
+44. 551.8899999999999864 Td
+(-) Tj
+ET
+BT
+/F1 9.5 Tf
+10.9249999999999989 TL
+0.216 0.255 0.318 rg
+60. 551.8899999999999864 Td
+(Added /assets routes for GET, POST, PUT, and DELETE.) Tj
+ET
+BT
+/F1 9.5 Tf
+10.9249999999999989 TL
+0.216 0.255 0.318 rg
+44. 533.8899999999999864 Td
+(-) Tj
+ET
+BT
+/F1 9.5 Tf
+10.9249999999999989 TL
+0.216 0.255 0.318 rg
+60. 533.8899999999999864 Td
+(Added backend setup documentation and environment examples.) Tj
+ET
+BT
+/F2 13 Tf
+14.9499999999999993 TL
+0.067 0.094 0.153 rg
+44. 511.8899999999999864 Td
+(Backend Files Added) Tj
+ET
+0.94 0.96 1. rg
+0.8 0.84 0.88 RG
+50. 503.8899999999999864 m
+545.2799999999999727 503.8899999999999864 l
+548.5937084989847108 503.8899999999999864 551.2799999999999727 501.2037084989847244 551.2799999999999727 497.8899999999999864 c
+551.2799999999999727 371.8899999999999864 l
+551.2799999999999727 368.5762915010152483 547.9662915010152346 365.8899999999999864 545.2799999999999727 365.8899999999999864 c
+50. 365.8899999999999864 l
+46.6862915010152406 365.8899999999999864 44. 369.2037084989847244 44. 371.8899999999999864 c
+44. 497.8899999999999864 l
+44. 501.2037084989847244 47.3137084989847594 503.8899999999999864 50. 503.8899999999999864 c
+h
+B
+BT
+/F5 8.8 Tf
+10.1199999999999992 TL
+0.067 0.094 0.153 rg
+56. 488.8899999999999864 Td
+(backend/requirements.txt) Tj
+T* (backend/.env.example) Tj
+T* (backend/README.md) Tj
+T* (backend/app/main.py) Tj
+T* (backend/app/config.py) Tj
+T* (backend/app/database.py) Tj
+T* (backend/app/models.py) Tj
+T* (backend/app/schemas.py) Tj
+T* (backend/app/crud.py) Tj
+T* (backend/app/routes/assets.py) Tj
+ET
+BT
+/F2 13 Tf
+14.9499999999999993 TL
+0.067 0.094 0.153 rg
+44. 345.8899999999999864 Td
+(API Endpoints) Tj
+ET
+BT
+/F1 9.5 Tf
+10.9249999999999989 TL
+0.216 0.255 0.318 rg
+44. 327.8899999999999864 Td
+(-) Tj
+ET
+BT
+/F1 9.5 Tf
+10.9249999999999989 TL
+0.216 0.255 0.318 rg
+60. 327.8899999999999864 Td
+(GET /health - verifies the backend is running.) Tj
+ET
+BT
+/F1 9.5 Tf
+10.9249999999999989 TL
+0.216 0.255 0.318 rg
+44. 309.8899999999999864 Td
+(-) Tj
+ET
+BT
+/F1 9.5 Tf
+10.9249999999999989 TL
+0.216 0.255 0.318 rg
+60. 309.8899999999999864 Td
+(GET /assets - returns all non-deleted asset records.) Tj
+ET
+BT
+/F1 9.5 Tf
+10.9249999999999989 TL
+0.216 0.255 0.318 rg
+44. 291.8899999999999864 Td
+(-) Tj
+ET
+BT
+/F1 9.5 Tf
+10.9249999999999989 TL
+0.216 0.255 0.318 rg
+60. 291.8899999999999864 Td
+(POST /assets - creates a new asset and returns the saved asset.) Tj
+ET
+BT
+/F1 9.5 Tf
+10.9249999999999989 TL
+0.216 0.255 0.318 rg
+44. 273.8899999999999864 Td
+(-) Tj
+ET
+BT
+/F1 9.5 Tf
+10.9249999999999989 TL
+0.216 0.255 0.318 rg
+60. 273.8899999999999864 Td
+(PUT /assets/{id} - updates an existing asset and returns the saved asset.) Tj
+ET
+BT
+/F1 9.5 Tf
+10.9249999999999989 TL
+0.216 0.255 0.318 rg
+44. 255.8899999999999864 Td
+(-) Tj
+ET
+BT
+/F1 9.5 Tf
+10.9249999999999989 TL
+0.216 0.255 0.318 rg
+60. 255.8899999999999864 Td
+(DELETE /assets/{id} - soft-deletes an asset and returns 204 No Content.) Tj
+ET
+BT
+/F2 13 Tf
+14.9499999999999993 TL
+0.067 0.094 0.153 rg
+44. 233.8899999999999864 Td
+(Database Design) Tj
+ET
+BT
+/F1 9.5 Tf
+10.9249999999999989 TL
+0.216 0.255 0.318 rg
+44. 215.8899999999999864 Td
+(The first backend version uses one assets table. Core searchable fields such as) Tj
+T* (id, name, department, username, and dateAsOf are stored as normal columns.) Tj
+T* (Nested hardware data is stored as JSON so the backend can accept the same) Tj
+T* (object shape that the frontend already uses.) Tj
+ET
+BT
+/F1 9.5 Tf
+10.9249999999999989 TL
+0.216 0.255 0.318 rg
+44. 157.8899999999999864 Td
+(-) Tj
+ET
+BT
+/F1 9.5 Tf
+10.9249999999999989 TL
+0.216 0.255 0.318 rg
+60. 157.8899999999999864 Td
+(cpu, network, peripherals, and system are JSON objects.) Tj
+ET
+BT
+/F1 9.5 Tf
+10.9249999999999989 TL
+0.216 0.255 0.318 rg
+44. 139.8899999999999864 Td
+(-) Tj
+ET
+BT
+/F1 9.5 Tf
+10.9249999999999989 TL
+0.216 0.255 0.318 rg
+60. 139.8899999999999864 Td
+(ram, gpu, and storage are JSON arrays because each asset can have multiple entries.) Tj
+ET
+BT
+/F1 9.5 Tf
+10.9249999999999989 TL
+0.216 0.255 0.318 rg
+44. 121.8899999999999864 Td
+(-) Tj
+ET
+BT
+/F1 9.5 Tf
+10.9249999999999989 TL
+0.216 0.255 0.318 rg
+60. 121.8899999999999864 Td
+(is_deleted enables soft delete so records can be hidden without immediately removing the database row.) Tj
+ET
+BT
+/F1 9.5 Tf
+10.9249999999999989 TL
+0.216 0.255 0.318 rg
+44. 103.8899999999999864 Td
+(-) Tj
+ET
+BT
+/F1 9.5 Tf
+10.9249999999999989 TL
+0.216 0.255 0.318 rg
+60. 103.8899999999999864 Td
+(version increments when records are updated, restored, or deleted.) Tj
+ET
+BT
+/F2 13 Tf
+14.9499999999999993 TL
+0.067 0.094 0.153 rg
+44. 81.8899999999999864 Td
+(Frontend Connection) Tj
+ET
+endstream
+endobj
+5 0 obj
+<</Type /Page
+/Parent 1 0 R
+/Resources 2 0 R
+/MediaBox [0 0 595.2799999999999727 841.8899999999999864]
+/Contents 6 0 R
+>>
+endobj
+6 0 obj
+<<
+/Length 5352
+>>
+stream
+0.200025 w
+0.8 0.84 0.88 RG
+BT
+/F1 9.5 Tf
+10.9249999999999989 TL
+0.216 0.255 0.318 rg
+44. 793.8899999999999864 Td
+(The React app connects to this backend when VITE_API_BASE_URL is configured) Tj
+T* (in the frontend .env file. If that variable is not set, the frontend still uses) Tj
+T* (localStorage for development.) Tj
+ET
+0.94 0.96 1. rg
+0.8 0.84 0.88 RG
+50. 757.8899999999999864 m
+545.2799999999999727 757.8899999999999864 l
+548.5937084989847108 757.8899999999999864 551.2799999999999727 755.2037084989847244 551.2799999999999727 751.8899999999999864 c
+551.2799999999999727 733.8899999999999864 l
+551.2799999999999727 730.5762915010152483 547.9662915010152346 727.8899999999999864 545.2799999999999727 727.8899999999999864 c
+50. 727.8899999999999864 l
+46.6862915010152406 727.8899999999999864 44. 731.2037084989847244 44. 733.8899999999999864 c
+44. 751.8899999999999864 l
+44. 755.2037084989847244 47.3137084989847594 757.8899999999999864 50. 757.8899999999999864 c
+h
+B
+BT
+/F5 8.8 Tf
+10.1199999999999992 TL
+0.067 0.094 0.153 rg
+56. 742.8899999999999864 Td
+(VITE_API_BASE_URL=http://localhost:8000) Tj
+ET
+BT
+/F2 13 Tf
+14.9499999999999993 TL
+0.067 0.094 0.153 rg
+44. 707.8899999999999864 Td
+(Backend Setup Steps) Tj
+ET
+0.94 0.96 1. rg
+0.8 0.84 0.88 RG
+50. 699.8899999999999864 m
+545.2799999999999727 699.8899999999999864 l
+548.5937084989847108 699.8899999999999864 551.2799999999999727 697.2037084989847244 551.2799999999999727 693.8899999999999864 c
+551.2799999999999727 615.8899999999999864 l
+551.2799999999999727 612.5762915010152483 547.9662915010152346 609.8899999999999864 545.2799999999999727 609.8899999999999864 c
+50. 609.8899999999999864 l
+46.6862915010152406 609.8899999999999864 44. 613.2037084989847244 44. 615.8899999999999864 c
+44. 693.8899999999999864 l
+44. 697.2037084989847244 47.3137084989847594 699.8899999999999864 50. 699.8899999999999864 c
+h
+B
+BT
+/F5 8.8 Tf
+10.1199999999999992 TL
+0.067 0.094 0.153 rg
+56. 684.8899999999999864 Td
+(cd backend) Tj
+T* (python -m venv .venv) Tj
+T* (.venv\\Scripts\\activate) Tj
+T* (pip install -r requirements.txt) Tj
+T* (copy .env.example .env) Tj
+T* (uvicorn app.main:app --reload) Tj
+ET
+BT
+/F2 13 Tf
+14.9499999999999993 TL
+0.067 0.094 0.153 rg
+44. 589.8899999999999864 Td
+(PostgreSQL Configuration) Tj
+ET
+BT
+/F1 9.5 Tf
+10.9249999999999989 TL
+0.216 0.255 0.318 rg
+44. 571.8899999999999864 Td
+(The default backend database URL expects a local PostgreSQL database named) Tj
+T* (invent. Update backend/.env if your username, password, host, port, or database) Tj
+T* (name are different.) Tj
+ET
+0.94 0.96 1. rg
+0.8 0.84 0.88 RG
+50. 535.8899999999999864 m
+545.2799999999999727 535.8899999999999864 l
+548.5937084989847108 535.8899999999999864 551.2799999999999727 533.2037084989847244 551.2799999999999727 529.8899999999999864 c
+551.2799999999999727 511.8899999999999864 l
+551.2799999999999727 508.5762915010152483 547.9662915010152346 505.8899999999999864 545.2799999999999727 505.8899999999999864 c
+50. 505.8899999999999864 l
+46.6862915010152406 505.8899999999999864 44. 509.2037084989847244 44. 511.8899999999999864 c
+44. 529.8899999999999864 l
+44. 533.2037084989847244 47.3137084989847594 535.8899999999999864 50. 535.8899999999999864 c
+h
+B
+BT
+/F5 8.8 Tf
+10.1199999999999992 TL
+0.067 0.094 0.153 rg
+56. 520.8899999999999864 Td
+(DATABASE_URL=postgresql+psycopg://postgres:postgres@localhost:5432/invent) Tj
+ET
+BT
+/F2 13 Tf
+14.9499999999999993 TL
+0.067 0.094 0.153 rg
+44. 485.8899999999999864 Td
+(Validation Performed) Tj
+ET
+BT
+/F1 9.5 Tf
+10.9249999999999989 TL
+0.216 0.255 0.318 rg
+44. 467.8899999999999864 Td
+(-) Tj
+ET
+BT
+/F1 9.5 Tf
+10.9249999999999989 TL
+0.216 0.255 0.318 rg
+60. 467.8899999999999864 Td
+(Python syntax compilation passed for backend/app.) Tj
+ET
+BT
+/F1 9.5 Tf
+10.9249999999999989 TL
+0.216 0.255 0.318 rg
+44. 449.8899999999999864 Td
+(-) Tj
+ET
+BT
+/F1 9.5 Tf
+10.9249999999999989 TL
+0.216 0.255 0.318 rg
+60. 449.8899999999999864 Td
+(The frontend production build passed after wiring create, update, delete, and read requests.) Tj
+ET
+BT
+/F2 13 Tf
+14.9499999999999993 TL
+0.067 0.094 0.153 rg
+44. 427.8899999999999864 Td
+(Recommended Next Steps) Tj
+ET
+BT
+/F1 9.5 Tf
+10.9249999999999989 TL
+0.216 0.255 0.318 rg
+44. 409.8899999999999864 Td
+(-) Tj
+ET
+BT
+/F1 9.5 Tf
+10.9249999999999989 TL
+0.216 0.255 0.318 rg
+60. 409.8899999999999864 Td
+(Create the PostgreSQL database named invent.) Tj
+ET
+BT
+/F1 9.5 Tf
+10.9249999999999989 TL
+0.216 0.255 0.318 rg
+44. 391.8899999999999864 Td
+(-) Tj
+ET
+BT
+/F1 9.5 Tf
+10.9249999999999989 TL
+0.216 0.255 0.318 rg
+60. 391.8899999999999864 Td
+(Install backend dependencies in a virtual environment.) Tj
+ET
+BT
+/F1 9.5 Tf
+10.9249999999999989 TL
+0.216 0.255 0.318 rg
+44. 373.8899999999999864 Td
+(-) Tj
+ET
+BT
+/F1 9.5 Tf
+10.9249999999999989 TL
+0.216 0.255 0.318 rg
+60. 373.8899999999999864 Td
+(Run uvicorn app.main:app --reload from the backend directory.) Tj
+ET
+BT
+/F1 9.5 Tf
+10.9249999999999989 TL
+0.216 0.255 0.318 rg
+44. 355.8899999999999864 Td
+(-) Tj
+ET
+BT
+/F1 9.5 Tf
+10.9249999999999989 TL
+0.216 0.255 0.318 rg
+60. 355.8899999999999864 Td
+(Set VITE_API_BASE_URL in the frontend .env file and restart Vite.) Tj
+ET
+BT
+/F1 9.5 Tf
+10.9249999999999989 TL
+0.216 0.255 0.318 rg
+44. 337.8899999999999864 Td
+(-) Tj
+ET
+BT
+/F1 9.5 Tf
+10.9249999999999989 TL
+0.216 0.255 0.318 rg
+60. 337.8899999999999864 Td
+(Later, add Alembic migrations before production deployment.) Tj
+ET
+endstream
+endobj
+1 0 obj
+<</Type /Pages
+/Kids [3 0 R 5 0 R ]
+/Count 2
+>>
+endobj
+7 0 obj
+<<
+/Type /Font
+/BaseFont /Helvetica
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+8 0 obj
+<<
+/Type /Font
+/BaseFont /Helvetica-Bold
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+9 0 obj
+<<
+/Type /Font
+/BaseFont /Helvetica-Oblique
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+10 0 obj
+<<
+/Type /Font
+/BaseFont /Helvetica-BoldOblique
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+11 0 obj
+<<
+/Type /Font
+/BaseFont /Courier
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+12 0 obj
+<<
+/Type /Font
+/BaseFont /Courier-Bold
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+13 0 obj
+<<
+/Type /Font
+/BaseFont /Courier-Oblique
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+14 0 obj
+<<
+/Type /Font
+/BaseFont /Courier-BoldOblique
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+15 0 obj
+<<
+/Type /Font
+/BaseFont /Times-Roman
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+16 0 obj
+<<
+/Type /Font
+/BaseFont /Times-Bold
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+17 0 obj
+<<
+/Type /Font
+/BaseFont /Times-Italic
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+18 0 obj
+<<
+/Type /Font
+/BaseFont /Times-BoldItalic
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+19 0 obj
+<<
+/Type /Font
+/BaseFont /ZapfDingbats
+/Subtype /Type1
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+20 0 obj
+<<
+/Type /Font
+/BaseFont /Symbol
+/Subtype /Type1
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+2 0 obj
+<<
+/ProcSet [/PDF /Text /ImageB /ImageC /ImageI]
+/Font <<
+/F1 7 0 R
+/F2 8 0 R
+/F3 9 0 R
+/F4 10 0 R
+/F5 11 0 R
+/F6 12 0 R
+/F7 13 0 R
+/F8 14 0 R
+/F9 15 0 R
+/F10 16 0 R
+/F11 17 0 R
+/F12 18 0 R
+/F13 19 0 R
+/F14 20 0 R
+>>
+/XObject <<
+>>
+>>
+endobj
+21 0 obj
+<<
+/Producer (jsPDF 4.2.1)
+/CreationDate (D:20260602102859+08'00')
+>>
+endobj
+22 0 obj
+<<
+/Type /Catalog
+/Pages 1 0 R
+/OpenAction [3 0 R /FitH null]
+/PageLayout /OneColumn
+>>
+endobj
+xref
+0 23
+0000000000 65535 f 
+0000012811 00000 n 
+0000014636 00000 n 
+0000000015 00000 n 
+0000000152 00000 n 
+0000007270 00000 n 
+0000007407 00000 n 
+0000012874 00000 n 
+0000012999 00000 n 
+0000013129 00000 n 
+0000013262 00000 n 
+0000013400 00000 n 
+0000013524 00000 n 
+0000013653 00000 n 
+0000013785 00000 n 
+0000013921 00000 n 
+0000014049 00000 n 
+0000014176 00000 n 
+0000014305 00000 n 
+0000014438 00000 n 
+0000014540 00000 n 
+0000014886 00000 n 
+0000014972 00000 n 
+trailer
+<<
+/Size 23
+/Root 22 0 R
+/Info 21 0 R
+/ID [ <B3CF6EAD6419E826A394509EE15D03B3> <B3CF6EAD6419E826A394509EE15D03B3> ]
+>>
+startxref
+15076
+%%EOF
