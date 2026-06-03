@@ -5,18 +5,20 @@ interface InventoryCardProps {
   employee: Employee;
   index: number;
   onViewSpecs: (employee: Employee) => void;
+  onViewProfilePicture: (employee: Employee) => void;
   onEdit: (employee: Employee) => void;
-  onDelete: (employee: Employee) => void;
 }
 
 export default function InventoryCard({
   employee,
   index,
   onViewSpecs,
+  onViewProfilePicture,
   onEdit,
-  onDelete,
 }: InventoryCardProps) {
   const deptStyle = getDeptStyle(employee.department);
+  const profilePictureUrl = employee.profilePictureUrl?.trim();
+  const idTag = employee.idTag?.trim();
   const totalRam = employee.ram.reduce((sum, r) => {
     const num = parseFloat(r.totalMemory) || 0;
     return sum + num;
@@ -36,9 +38,20 @@ export default function InventoryCard({
     >
       {/* Header */}
       <div className="card-header">
-        <div className="avatar" style={{ background: employee.avatarColor }}>
-          {employee.initials}
-        </div>
+        <button
+          type="button"
+          className="avatar-button"
+          onClick={() => onViewProfilePicture(employee)}
+          aria-label={`View ${employee.name} profile picture`}
+        >
+          <span className="avatar" style={{ background: employee.avatarColor }}>
+            {profilePictureUrl ? (
+              <img className="avatar-image" src={profilePictureUrl} alt={`${employee.name} profile`} />
+            ) : (
+              employee.initials
+            )}
+          </span>
+        </button>
         <div className="card-info">
           <div className="card-name">{employee.name}</div>
           <div className="card-meta">
@@ -48,6 +61,7 @@ export default function InventoryCard({
             >
               {employee.department}
             </span>
+            {idTag && <span className="id-tag">ID {idTag}</span>}
             <span className="pc-id">{employee.network.hostname}</span>
           </div>
         </div>
@@ -177,16 +191,6 @@ export default function InventoryCard({
             <path d="m15 5 4 4"/>
           </svg>
           Edit
-        </button>
-        <button className="delete-btn" onClick={() => onDelete(employee)}>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M3 6h18" />
-            <path d="M8 6V4h8v2" />
-            <path d="M19 6l-1 14H6L5 6" />
-            <path d="M10 11v5" />
-            <path d="M14 11v5" />
-          </svg>
-          Delete
         </button>
       </div>
     </div>

@@ -44,6 +44,6 @@ doc.text(processText, 20, 90);
 
 // Save the PDF using fs
 const arrayBuffer = doc.output('arraybuffer');
-fs.writeFileSync('PDF_Implementation_Process.pdf', Buffer.from(arrayBuffer));
+fs.writeFileSync('../PDF_Implementation_Process.pdf', Buffer.from(arrayBuffer));
 
 console.log('PDF generated successfully!');

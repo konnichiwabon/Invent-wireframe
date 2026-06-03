@@ -9,6 +9,9 @@ interface SpecsModalProps {
 
 export default function SpecsModal({ employee, onClose }: SpecsModalProps) {
   const deptStyle = getDeptStyle(employee.department);
+  const profilePictureUrl = employee.profilePictureUrl?.trim();
+  const idTag = employee.idTag?.trim();
+  const profilePictureKey = employee.profilePictureKey?.trim();
 
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
@@ -32,7 +35,11 @@ export default function SpecsModal({ employee, onClose }: SpecsModalProps) {
         {/* Header */}
         <div className="modal-header">
           <div className="modal-avatar" style={{ background: employee.avatarColor }}>
-            {employee.initials}
+            {profilePictureUrl ? (
+              <img className="avatar-image" src={profilePictureUrl} alt={`${employee.name} profile`} />
+            ) : (
+              employee.initials
+            )}
           </div>
           <div>
             <div className="modal-name">{employee.name}</div>
@@ -43,6 +50,7 @@ export default function SpecsModal({ employee, onClose }: SpecsModalProps) {
               >
                 {employee.department}
               </span>
+              {idTag && <span className="id-tag">ID {idTag}</span>}
               <span className="modal-pcid">{employee.network.hostname}</span>
             </div>
           </div>
@@ -53,15 +61,16 @@ export default function SpecsModal({ employee, onClose }: SpecsModalProps) {
 
         {/* Body */}
         <div className="modal-body">
-
           {/* ── User & Identity ── */}
           <div className="modal-section">
             <div className="modal-section-title">👤 User & Identity</div>
             <div className="modal-spec-grid">
               <SpecItem label="Username" value={employee.username} />
               <SpecItem label="Omada Username" value={employee.omadaUsername} />
+              <SpecItem label="ID Tag" value={employee.idTag ?? ''} mono />
               <SpecItem label="Department" value={employee.department} />
               <SpecItem label="Date (as of)" value={formatDate(employee.dateAsOf)} />
+              {profilePictureKey && <SpecItem label="R2 Object Key" value={profilePictureKey} mono wide />}
             </div>
           </div>
 

@@ -141,6 +141,27 @@ body {
   margin-bottom: 0.55rem;
 }
 
+.avatar-button {
+  width: 40px;
+  height: 40px;
+  border: 0;
+  border-radius: 50%;
+  padding: 0;
+  background: none;
+  color: inherit;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.avatar-button:focus-visible {
+  outline: 3px solid rgba(59, 130, 246, 0.3);
+  outline-offset: 3px;
+}
+
+.avatar-button:hover .avatar {
+  transform: scale(1.04);
+}
+
 .avatar {
   width: 40px;
   height: 40px;
@@ -155,6 +176,8 @@ body {
   box-shadow: 0 6px 14px rgba(15, 23, 42, 0.18);
   letter-spacing: 0.02em;
   position: relative;
+  overflow: hidden;
+  transition: transform var(--transition-fast);
 }
 
 .avatar::after {
@@ -163,6 +186,14 @@ body {
   inset: -3px;
   border-radius: 50%;
   border: 2px solid #e6edf7;
+  pointer-events: none;
+}
+
+.avatar-image {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
 }
 
 .card-info {
@@ -194,6 +225,19 @@ body {
   font-weight: 700;
   letter-spacing: 0.01em;
   box-shadow: var(--shadow-badge);
+}
+
+.id-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.12rem 0.45rem;
+  border-radius: var(--radius-full);
+  background: #eef2ff;
+  color: #475569;
+  font-family: "SF Mono", "Fira Code", monospace;
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
 }
 
 .pc-id {
@@ -394,6 +438,131 @@ body {
   color: white;
   flex-shrink: 0;
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+}
+
+.photo-viewer-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  background: rgba(15, 23, 42, 0.92);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(16px, 3vw, 36px);
+}
+
+.photo-viewer-stage {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.photo-viewer-image {
+  max-width: 100%;
+  max-height: 100%;
+  display: block;
+  object-fit: contain;
+  border-radius: var(--radius-sm);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.38);
+}
+
+.photo-viewer-close {
+  position: fixed;
+  top: clamp(14px, 2.5vw, 26px);
+  right: clamp(14px, 2.5vw, 26px);
+  width: 42px;
+  height: 42px;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 50%;
+  background: rgba(15, 23, 42, 0.72);
+  color: white;
+  font-family: inherit;
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.photo-viewer-close:hover {
+  background: rgba(30, 41, 59, 0.88);
+}
+
+.photo-viewer-empty {
+  width: min(70vw, 360px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: clamp(3rem, 12vw, 7rem);
+  font-weight: 800;
+}
+
+.profile-picture-editor {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  flex-shrink: 0;
+}
+
+.profile-picture-frame {
+  position: relative;
+  display: block;
+}
+
+.profile-picture-badge {
+  position: absolute;
+  right: -2px;
+  bottom: -2px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #2563eb;
+  color: white;
+  border: 2px solid white;
+  font-size: 0.95rem;
+  font-weight: 700;
+  line-height: 1;
+  box-shadow: 0 4px 10px rgba(37, 99, 235, 0.3);
+  cursor: pointer;
+}
+
+.profile-picture-badge:hover {
+  background: #1d4ed8;
+}
+
+.profile-picture-badge:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.profile-picture-input {
+  display: none;
+}
+
+.profile-picture-remove {
+  border: none;
+  background: transparent;
+  color: #ef4444;
+  font-family: inherit;
+  font-size: 0.68rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.profile-picture-remove:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
 }
 
 .modal-name {
@@ -481,6 +650,7 @@ body {
   color: var(--text-value);
   font-weight: 600;
   margin-top: 0.2rem;
+  overflow-wrap: anywhere;
 }
 
 .condition-badge {
@@ -625,8 +795,7 @@ body {
   margin-top: 0;
 }
 
-.edit-btn,
-.delete-btn {
+.edit-btn {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -643,8 +812,7 @@ body {
   transition: all var(--transition-fast);
 }
 
-.edit-btn svg,
-.delete-btn svg {
+.edit-btn svg {
   width: 13px;
   height: 13px;
 }
@@ -653,12 +821,6 @@ body {
   border-color: #fde68a;
   color: #b45309;
   background: #fffbeb;
-}
-
-.delete-btn:hover {
-  border-color: #fecaca;
-  color: #b91c1c;
-  background: #fef2f2;
 }
 
 /* Count Badge (e.g. "2 sticks") */
@@ -904,6 +1066,25 @@ select.form-input {
   color: var(--text-primary);
 }
 
+.form-delete-btn {
+  padding: 0.6rem 1.5rem;
+  border: 1.5px solid #fecaca;
+  border-radius: var(--radius-md);
+  background: #fff5f5;
+  color: #dc2626;
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.form-delete-btn:hover {
+  border-color: #fca5a5;
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
 .form-save-btn {
   padding: 0.6rem 1.5rem;
   border: none;
@@ -921,6 +1102,18 @@ select.form-input {
 .form-save-btn:hover {
   transform: translateY(-1px);
   box-shadow: 0 4px 14px rgba(59, 130, 246, 0.4);
+}
+
+.form-cancel-btn:disabled,
+.form-delete-btn:disabled,
+.form-save-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+.form-save-btn:disabled:hover {
+  transform: none;
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
 }
 
 /* ===== MODAL ARRAY BLOCKS ===== */

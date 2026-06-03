@@ -52,6 +52,11 @@ export interface Employee {
   department: string;
   username: string;
   omadaUsername: string;
+  idTag?: string;
+  profilePictureKey?: string;
+  profilePictureUrl?: string;
+  profilePictureOriginalUrl?: string;
+  profilePictureUploadData?: string;
   avatarColor: string;
   dateAsOf: string;
   cpu: CpuSpec;

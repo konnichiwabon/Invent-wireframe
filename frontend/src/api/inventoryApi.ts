@@ -29,6 +29,10 @@ export function fetchEmployees(): Promise<Employee[]> {
   return request<Employee[]>("/assets");
 }
 
+export function fetchEmployee(id: string): Promise<Employee> {
+  return request<Employee>(`/assets/${id}`);
+}
+
 export function createEmployee(employee: Employee): Promise<Employee> {
   return request<Employee>("/assets", {
     method: "POST",

@@ -3,6 +3,7 @@ import type { Employee } from "./types/inventory";
 import {
   createEmployee,
   deleteEmployee,
+  fetchEmployee,
   fetchEmployees,
   inventoryApiEnabled,
   updateEmployee,
@@ -11,6 +12,7 @@ import { defaultEmployees } from "./data/employees";
 import { filterEmployees, getDepartments } from "./utils/helpers";
 import InventoryCard from "./components/InventoryCard";
 import SpecsModal from "./components/SpecsModal";
+import ProfilePictureModal from "./components/ProfilePictureModal";
 import EmployeeForm from "./components/EmployeeForm";
 import TopBar from "./components/TopBar";
 import Sidebar from "./components/Sidebar";
@@ -33,7 +35,7 @@ const gridStyle = {
   display: "grid",
   gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 300px), 315px))",
   gap: "1rem",
-  justifyContent: "center",
+  justifyContent: "start",
   alignItems: "start",
   padding: "1rem 0 2rem",
 };
@@ -61,7 +63,16 @@ function loadLocalEmployees(): Employee[] {
 }
 
 function saveLocalEmployees(employees: Employee[]) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(employees));
+  localStorage.setItem(
+    STORAGE_KEY,
+    JSON.stringify(employees.map(stripTransientEmployeeFields)),
+  );
+}
+
+function stripTransientEmployeeFields(employee: Employee): Employee {
+  const persistedEmployee = { ...employee };
+  delete persistedEmployee.profilePictureUploadData;
+  return persistedEmployee;
 }
 
 type FormMode = { type: "add" } | { type: "edit"; employee: Employee } | null;
@@ -75,9 +86,11 @@ function App() {
   const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(
     null,
   );
+  const [selectedProfilePicture, setSelectedProfilePicture] =
+    useState<Employee | null>(null);
   const [formMode, setFormMode] = useState<FormMode>(null);
 
-useEffect(() => {
+  useEffect(() => {
     if (!inventoryApiEnabled) return;
 
     let cancelled = false;
@@ -123,47 +136,66 @@ useEffect(() => {
     [employees, searchTerm, activeDept],
   );
 
-  const handleSave = useCallback(async (emp: Employee) => {
-    try {
-      const exists = employees.some((employee) => employee.id === emp.id);
-      let savedEmployee = emp;
-
-      if (inventoryApiEnabled) {
-        savedEmployee = exists ? await updateEmployee(emp) : await createEmployee(emp);
-      }
-
-      setEmployees((prev) => {
-        if (exists) {
-          return prev.map((employee) =>
-            employee.id === savedEmployee.id ? savedEmployee : employee,
-          );
-        }
-        return [...prev, savedEmployee];
-      });
-      setLoadError(null);
-      setFormMode(null);
-    } catch (error) {
-      const exists = employees.some((employee) => employee.id === emp.id);
-      setEmployees((prev) => {
-        if (exists) {
-          return prev.map((employee) =>
-            employee.id === emp.id ? emp : employee,
-          );
-        }
-        return [...prev, emp];
-      });
-      setFormMode(null);
-      setLoadError(
-        error instanceof Error
-          ? `Saved locally only. Backend sync failed: ${error.message}`
-          : "Saved locally only. Backend sync failed.",
+  const handleSave = useCallback(
+    async (emp: Employee) => {
+      const existsAtSubmit = employees.some(
+        (employee) => employee.id === emp.id,
       );
-    }
-  }, [employees]);
+
+      try {
+        let savedEmployee = emp;
+
+        if (inventoryApiEnabled) {
+          savedEmployee = existsAtSubmit
+            ? await updateEmployee(emp)
+            : await createEmployee(emp);
+        } else {
+          savedEmployee = stripTransientEmployeeFields(emp);
+        }
+
+        setEmployees((prev) => {
+          const existsInLatestState = prev.some(
+            (employee) => employee.id === savedEmployee.id,
+          );
+
+          if (existsInLatestState) {
+            return prev.map((employee) =>
+              employee.id === savedEmployee.id ? savedEmployee : employee,
+            );
+          }
+
+          return [...prev, savedEmployee];
+        });
+        setLoadError(null);
+        setFormMode(null);
+      } catch (error) {
+        setEmployees((prev) => {
+          const existsInLatestState = prev.some(
+            (employee) => employee.id === emp.id,
+          );
+
+          if (existsInLatestState) {
+            return prev.map((employee) =>
+              employee.id === emp.id ? stripTransientEmployeeFields(emp) : employee,
+            );
+          }
+
+          return [...prev, stripTransientEmployeeFields(emp)];
+        });
+        setFormMode(null);
+        setLoadError(
+          error instanceof Error
+            ? `Saved locally only. Backend sync failed: ${error.message}`
+            : "Saved locally only. Backend sync failed.",
+        );
+      }
+    },
+    [employees],
+  );
 
   const handleDelete = useCallback(async (emp: Employee) => {
     const confirmed = window.confirm(`Delete ${emp.name}'s asset record?`);
-    if (!confirmed) return;
+    if (!confirmed) return false;
 
     try {
       if (inventoryApiEnabled) {
@@ -171,16 +203,68 @@ useEffect(() => {
       }
 
       setEmployees((prev) => prev.filter((employee) => employee.id !== emp.id));
-      setSelectedEmployee((selected) => selected?.id === emp.id ? null : selected);
+      setSelectedEmployee((selected) =>
+        selected?.id === emp.id ? null : selected,
+      );
+      setSelectedProfilePicture((selected) =>
+        selected?.id === emp.id ? null : selected,
+      );
       setLoadError(null);
+      return true;
     } catch (error) {
       setEmployees((prev) => prev.filter((employee) => employee.id !== emp.id));
-      setSelectedEmployee((selected) => selected?.id === emp.id ? null : selected);
+      setSelectedEmployee((selected) =>
+        selected?.id === emp.id ? null : selected,
+      );
+      setSelectedProfilePicture((selected) =>
+        selected?.id === emp.id ? null : selected,
+      );
       setLoadError(
         error instanceof Error
           ? `Deleted locally only. Backend sync failed: ${error.message}`
-          : "Deleted locally only. Backend sync failed.",
+            : "Deleted locally only. Backend sync failed.",
       );
+      return true;
+    }
+  }, []);
+
+  const handleViewSpecs = useCallback(async (emp: Employee) => {
+    setSelectedEmployee(emp);
+
+    if (!inventoryApiEnabled) return;
+
+    try {
+      const freshEmployee = await fetchEmployee(emp.id);
+      setSelectedEmployee((selected) =>
+        selected?.id === emp.id ? freshEmployee : selected,
+      );
+      setEmployees((prev) =>
+        prev.map((employee) =>
+          employee.id === freshEmployee.id ? freshEmployee : employee,
+        ),
+      );
+    } catch {
+      // Keep showing the card data if the detail refresh fails.
+    }
+  }, []);
+
+  const handleViewProfilePicture = useCallback(async (emp: Employee) => {
+    setSelectedProfilePicture(emp);
+
+    if (!inventoryApiEnabled) return;
+
+    try {
+      const freshEmployee = await fetchEmployee(emp.id);
+      setSelectedProfilePicture((selected) =>
+        selected?.id === emp.id ? freshEmployee : selected,
+      );
+      setEmployees((prev) =>
+        prev.map((employee) =>
+          employee.id === freshEmployee.id ? freshEmployee : employee,
+        ),
+      );
+    } catch {
+      // Keep showing the card image if the full-size refresh fails.
     }
   }, []);
 
@@ -199,7 +283,7 @@ useEffect(() => {
             onAddAsset={() => setFormMode({ type: "add" })}
           />
 
-        {/* Card Grid */}
+          {/* Card Grid */}
           {loadError && (
             <div className="no-results">
               <div className="no-results-text">Local cache fallback active</div>
@@ -207,30 +291,30 @@ useEffect(() => {
             </div>
           )}
           <div style={gridStyle}>
-        {isLoading ? (
-          <div className="no-results">
-            <div className="no-results-text">Loading assets...</div>
-          </div>
-        ) : filteredEmployees.length > 0 ? (
-          filteredEmployees.map((emp, i) => (
-            <InventoryCard
-              key={emp.id}
-              employee={emp}
-              index={i}
-              onViewSpecs={setSelectedEmployee}
-              onEdit={(e) => setFormMode({ type: "edit", employee: e })}
-              onDelete={handleDelete}
-            />
-          ))
-        ) : (
-          <div className="no-results">
-            <div className="no-results-icon">🔍</div>
-            <div className="no-results-text">No matching devices found</div>
-            <div className="no-results-sub">
-              Try adjusting your search or filter criteria
-            </div>
-          </div>
-        )}
+            {isLoading ? (
+              <div className="no-results">
+                <div className="no-results-text">Loading assets...</div>
+              </div>
+            ) : filteredEmployees.length > 0 ? (
+              filteredEmployees.map((emp, i) => (
+                <InventoryCard
+                  key={emp.id}
+                  employee={emp}
+                  index={i}
+                  onViewSpecs={handleViewSpecs}
+                  onViewProfilePicture={handleViewProfilePicture}
+                  onEdit={(e) => setFormMode({ type: "edit", employee: e })}
+                />
+              ))
+            ) : (
+              <div className="no-results">
+                <div className="no-results-icon">🔍</div>
+                <div className="no-results-text">No matching devices found</div>
+                <div className="no-results-sub">
+                  Try adjusting your search or filter criteria
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </main>
@@ -243,11 +327,25 @@ useEffect(() => {
         />
       )}
 
+      {selectedProfilePicture && (
+        <ProfilePictureModal
+          employee={selectedProfilePicture}
+          onClose={() => setSelectedProfilePicture(null)}
+        />
+      )}
+
       {/* Add / Edit Form */}
       {formMode && (
         <EmployeeForm
           employee={formMode.type === "edit" ? formMode.employee : null}
           onSave={handleSave}
+          onDelete={async (employee) => {
+            const deleted = await handleDelete(employee);
+            if (deleted) {
+              setFormMode(null);
+            }
+            return deleted;
+          }}
           onClose={() => setFormMode(null)}
         />
       )}

@@ -249,6 +249,6 @@ doc.setFont("helvetica", "normal");
 doc.setFontSize(8);
 doc.text("Sidebar nav items are present visually; Assets is the active implemented view in this UI.", 40, pageHeight - 35);
 
-const output = "UI_Flowchart.pdf";
+const output = "../UI_Flowchart.pdf";
 fs.writeFileSync(output, Buffer.from(doc.output("arraybuffer")));
 console.log(`Generated ${output}`);
