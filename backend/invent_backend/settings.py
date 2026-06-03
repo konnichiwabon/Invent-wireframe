@@ -148,6 +148,7 @@ USE_I18N = True
 USE_TZ = True
 
 STATIC_URL = "static/"
+STATIC_ROOT = BASE_DIR / "staticfiles"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 R2_BUCKET_NAME = os.environ.get("R2_BUCKET_NAME", "")
