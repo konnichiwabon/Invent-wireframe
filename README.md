@@ -67,4 +67,4 @@ R2_PUBLIC_BASE_URL=
 R2_PROFILE_PICTURE_PREFIX=profile-pictures
 ```
 
-If `R2_PUBLIC_BASE_URL` is blank, the API returns temporary signed image URLs. If you connect a public R2 custom domain or `r2.dev` domain, set it there.
+If `R2_PUBLIC_BASE_URL` is blank, the API returns temporary signed image URLs. If you connect a public R2 custom domain or `r2.dev` domain, set it there .
