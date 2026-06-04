@@ -17,9 +17,9 @@ export function exportInventoryToPDF(employees: Employee[]) {
   doc.setFontSize(10);
   doc.text(`Generated on: ${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}`, 40, 60);
 
-  // Define the columns based on the requested 28 fields
+  // Define the columns based on the requested inventory fields
   const head = [[
-    'Department', 'Username', 'Omada Username',
+    'Department', 'Email', 'Username', 'Omada Name',
     'Hostname', 'MAC Address', 'DHCP?', 'Current IP', 'Port Number',
     'CPU Model', 'Cores',
     'RAM SN', 'RAM Model', 'Speed', 'Total Memory',
@@ -48,6 +48,7 @@ export function exportInventoryToPDF(employees: Employee[]) {
 
     return [
       emp.department,
+      emp.email ?? '',
       emp.username,
       emp.omadaUsername,
       emp.network.hostname,

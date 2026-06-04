@@ -40,6 +40,14 @@ const gridStyle = {
   padding: "1rem 0 2rem",
 };
 
+function normalizeEmployee(employee: Employee): Employee {
+  return {
+    ...employee,
+    email: employee.email ?? "",
+    devicePhotos: employee.devicePhotos ?? [],
+  };
+}
+
 function loadLocalEmployees(): Employee[] {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
@@ -51,7 +59,7 @@ function loadLocalEmployees(): Employee[] {
         const missingDefaults = defaultEmployees.filter(
           (employee) => !existingIds.has(employee.id),
         );
-        return [...parsed, ...missingDefaults];
+        return [...parsed.map(normalizeEmployee), ...missingDefaults.map(normalizeEmployee)];
       }
       // Old format detected — clear and use defaults
       localStorage.removeItem(STORAGE_KEY);
@@ -59,7 +67,7 @@ function loadLocalEmployees(): Employee[] {
   } catch {
     /* ignore */
   }
-  return defaultEmployees;
+  return defaultEmployees.map(normalizeEmployee);
 }
 
 function saveLocalEmployees(employees: Employee[]) {
@@ -72,6 +80,11 @@ function saveLocalEmployees(employees: Employee[]) {
 function stripTransientEmployeeFields(employee: Employee): Employee {
   const persistedEmployee = { ...employee };
   delete persistedEmployee.profilePictureUploadData;
+  persistedEmployee.devicePhotos = (employee.devicePhotos ?? []).map((photo) => {
+    const persistedPhoto = { ...photo };
+    delete persistedPhoto.uploadData;
+    return persistedPhoto;
+  });
   return persistedEmployee;
 }
 
@@ -101,7 +114,7 @@ function App() {
         setLoadError(null);
         const apiEmployees = await fetchEmployees();
         if (!cancelled) {
-          setEmployees(apiEmployees);
+          setEmployees(apiEmployees.map(normalizeEmployee));
         }
       } catch (error) {
         if (!cancelled) {
@@ -152,6 +165,7 @@ function App() {
         } else {
           savedEmployee = stripTransientEmployeeFields(emp);
         }
+        savedEmployee = normalizeEmployee(savedEmployee);
 
         setEmployees((prev) => {
           const existsInLatestState = prev.some(
@@ -235,12 +249,13 @@ function App() {
 
     try {
       const freshEmployee = await fetchEmployee(emp.id);
+      const normalizedEmployee = normalizeEmployee(freshEmployee);
       setSelectedEmployee((selected) =>
-        selected?.id === emp.id ? freshEmployee : selected,
+        selected?.id === emp.id ? normalizedEmployee : selected,
       );
       setEmployees((prev) =>
         prev.map((employee) =>
-          employee.id === freshEmployee.id ? freshEmployee : employee,
+          employee.id === normalizedEmployee.id ? normalizedEmployee : employee,
         ),
       );
     } catch {
@@ -255,12 +270,13 @@ function App() {
 
     try {
       const freshEmployee = await fetchEmployee(emp.id);
+      const normalizedEmployee = normalizeEmployee(freshEmployee);
       setSelectedProfilePicture((selected) =>
-        selected?.id === emp.id ? freshEmployee : selected,
+        selected?.id === emp.id ? normalizedEmployee : selected,
       );
       setEmployees((prev) =>
         prev.map((employee) =>
-          employee.id === freshEmployee.id ? freshEmployee : employee,
+          employee.id === normalizedEmployee.id ? normalizedEmployee : employee,
         ),
       );
     } catch {

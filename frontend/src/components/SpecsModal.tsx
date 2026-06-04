@@ -12,6 +12,7 @@ export default function SpecsModal({ employee, onClose }: SpecsModalProps) {
   const profilePictureUrl = employee.profilePictureUrl?.trim();
   const idTag = employee.idTag?.trim();
   const profilePictureKey = employee.profilePictureKey?.trim();
+  const devicePhotos = employee.devicePhotos ?? [];
 
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
@@ -65,8 +66,9 @@ export default function SpecsModal({ employee, onClose }: SpecsModalProps) {
           <div className="modal-section">
             <div className="modal-section-title">👤 User & Identity</div>
             <div className="modal-spec-grid">
+              <SpecItem label="Email" value={employee.email ?? ''} />
               <SpecItem label="Username" value={employee.username} />
-              <SpecItem label="Omada Username" value={employee.omadaUsername} />
+              <SpecItem label="Omada Name" value={employee.omadaUsername} />
               <SpecItem label="ID Tag" value={employee.idTag ?? ''} mono />
               <SpecItem label="Department" value={employee.department} />
               <SpecItem label="Date (as of)" value={formatDate(employee.dateAsOf)} />
@@ -161,6 +163,29 @@ export default function SpecsModal({ employee, onClose }: SpecsModalProps) {
               <SpecItem label="Monitor" value={employee.peripherals.monitor} wide />
             </div>
           </div>
+
+          {devicePhotos.length > 0 && (
+            <div className="modal-section">
+              <div className="modal-section-title">Device Pictures ({devicePhotos.length})</div>
+              <div className="device-photo-grid">
+                {devicePhotos.map((photo, i) => (
+                  <a
+                    key={`${photo.objectKey || photo.url}-${i}`}
+                    className="device-photo-tile device-photo-link"
+                    href={photo.url}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    <img className="device-photo-image" src={photo.url} alt={`Device ${i + 1}`} />
+                    <div className="device-photo-footer">
+                      <span>Photo {i + 1}</span>
+                      {photo.objectKey && <span className="device-photo-state">R2</span>}
+                    </div>
+                  </a>
+                ))}
+              </div>
+            </div>
+          )}
 
         </div>
       </div>

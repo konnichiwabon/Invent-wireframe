@@ -70,6 +70,7 @@ export function filterEmployees(
     const term = searchTerm.toLowerCase();
     return (
       emp.name.toLowerCase().includes(term) ||
+      (emp.email ?? '').toLowerCase().includes(term) ||
       emp.username.toLowerCase().includes(term) ||
       emp.omadaUsername.toLowerCase().includes(term) ||
       emp.network.hostname.toLowerCase().includes(term) ||
