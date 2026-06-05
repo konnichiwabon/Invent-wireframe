@@ -53,29 +53,33 @@ def get_r2_client():
     )
 
 
-def decode_data_image(data_url: str) -> tuple[str, bytes]:
+def decode_data_image(
+    data_url: str,
+    label: str = "Image",
+    max_bytes: int | None = None,
+) -> tuple[str, bytes]:
     match = DATA_IMAGE_PATTERN.match(data_url.strip())
     if not match:
-        raise R2StorageError("Profile picture must be a JPEG, PNG, or WebP image.")
+        raise R2StorageError(f"{label} must be a JPEG, PNG, or WebP image.")
 
     mime_type, encoded_body = match.groups()
 
     try:
         body = base64.b64decode(encoded_body, validate=True)
     except (binascii.Error, ValueError) as exc:
-        raise R2StorageError("Profile picture data is invalid.") from exc
+        raise R2StorageError(f"{label} data is invalid.") from exc
 
-    if len(body) > settings.R2_MAX_PROFILE_IMAGE_BYTES:
-        raise R2StorageError("Profile picture is too large.")
+    if max_bytes is not None and len(body) > max_bytes:
+        raise R2StorageError(f"{label} is too large.")
 
     return mime_type, body
 
 
-def upload_profile_picture(asset_id: str, data_url: str) -> str:
-    mime_type, body = decode_data_image(data_url)
+def upload_r2_image(asset_id: str, data_url: str, prefix: str, label: str, max_bytes: int) -> str:
+    mime_type, body = decode_data_image(data_url, label, max_bytes)
     extension = EXTENSIONS_BY_MIME_TYPE[mime_type]
-    prefix = settings.R2_PROFILE_PICTURE_PREFIX.strip("/")
-    object_key = f"{prefix}/{asset_id}/{uuid4().hex}.{extension}"
+    object_prefix = prefix.strip("/")
+    object_key = f"{object_prefix}/{asset_id}/{uuid4().hex}.{extension}"
 
     try:
         get_r2_client().put_object(
@@ -85,12 +89,32 @@ def upload_profile_picture(asset_id: str, data_url: str) -> str:
             ContentType=mime_type,
         )
     except Exception as exc:
-        raise R2StorageError("Unable to upload profile picture to Cloudflare R2.") from exc
+        raise R2StorageError(f"Unable to upload {label.lower()} to Cloudflare R2.") from exc
 
     return object_key
 
 
-def delete_profile_picture(object_key: str) -> None:
+def upload_profile_picture(asset_id: str, data_url: str) -> str:
+    return upload_r2_image(
+        asset_id,
+        data_url,
+        settings.R2_PROFILE_PICTURE_PREFIX,
+        "Profile picture",
+        settings.R2_MAX_PROFILE_IMAGE_BYTES,
+    )
+
+
+def upload_device_photo(asset_id: str, data_url: str) -> str:
+    return upload_r2_image(
+        asset_id,
+        data_url,
+        settings.R2_DEVICE_PHOTO_PREFIX,
+        "Device photo",
+        settings.R2_MAX_DEVICE_PHOTO_BYTES,
+    )
+
+
+def delete_r2_object(object_key: str) -> None:
     if not object_key or not r2_is_configured():
         return
 
@@ -104,7 +128,15 @@ def delete_profile_picture(object_key: str) -> None:
         return
 
 
-def get_profile_picture_url(object_key: str) -> str:
+def delete_profile_picture(object_key: str) -> None:
+    delete_r2_object(object_key)
+
+
+def delete_device_photo(object_key: str) -> None:
+    delete_r2_object(object_key)
+
+
+def get_r2_object_url(object_key: str) -> str:
     if not object_key:
         return ""
 
@@ -122,3 +154,11 @@ def get_profile_picture_url(object_key: str) -> str:
         )
     except Exception:
         return ""
+
+
+def get_profile_picture_url(object_key: str) -> str:
+    return get_r2_object_url(object_key)
+
+
+def get_device_photo_url(object_key: str) -> str:
+    return get_r2_object_url(object_key)
