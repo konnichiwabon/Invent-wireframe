@@ -19,7 +19,7 @@ export function exportInventoryToPDF(employees: Employee[]) {
 
   // Define the columns based on the requested inventory fields
   const head = [[
-    'Department', 'Email', 'Username', 'Omada Name',
+    'Department', 'Classification', 'Email', 'Username', 'Omada Name',
     'Hostname', 'MAC Address', 'DHCP?', 'Current IP', 'Port Number',
     'CPU Manufacturer', 'CPU Model', 'Cores',
     'RAM SN', 'RAM Model', 'Speed', 'Total Memory',
@@ -48,6 +48,7 @@ export function exportInventoryToPDF(employees: Employee[]) {
 
     return [
       emp.department,
+      emp.classification,
       emp.email ?? '',
       emp.username,
       emp.omadaUsername,

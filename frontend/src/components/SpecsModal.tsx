@@ -13,6 +13,8 @@ export default function SpecsModal({ employee, onClose }: SpecsModalProps) {
   const idTag = employee.idTag?.trim();
   const profilePictureKey = employee.profilePictureKey?.trim();
   const devicePhotos = employee.devicePhotos ?? [];
+  const classification = employee.classification ?? 'In Use';
+  const classificationClass = classification === 'Resigned' ? 'resigned' : 'in-use';
 
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
@@ -43,7 +45,14 @@ export default function SpecsModal({ employee, onClose }: SpecsModalProps) {
             )}
           </div>
           <div>
-            <div className="modal-name">{employee.name}</div>
+            <div className="modal-title-row">
+              <div className="modal-name">{employee.name}</div>
+              <span
+                className={`classification-dot ${classificationClass}`}
+                title={classification}
+                aria-label={`Classification: ${classification}`}
+              />
+            </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginTop: '0.25rem', flexWrap: 'wrap' }}>
               <span
                 className="dept-badge"
@@ -69,6 +78,7 @@ export default function SpecsModal({ employee, onClose }: SpecsModalProps) {
               <SpecItem label="Email" value={employee.email ?? ''} />
               <SpecItem label="Username" value={employee.username} />
               <SpecItem label="Omada Name" value={employee.omadaUsername} />
+              <SpecItem label="Classification" value={classification} />
               <SpecItem label="ID Tag" value={employee.idTag ?? ''} mono />
               <SpecItem label="Department" value={employee.department} />
               <SpecItem label="Date (as of)" value={formatDate(employee.dateAsOf)} />

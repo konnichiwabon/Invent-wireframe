@@ -36,6 +36,7 @@ class Asset(models.Model):
     name = models.CharField(max_length=255)
     initials = models.CharField(max_length=16, default="", blank=True)
     department = models.CharField(max_length=120, db_index=True)
+    classification = models.CharField(max_length=32, default="In Use", blank=True)
     email = models.CharField(max_length=255, default="", blank=True)
     username = models.CharField(max_length=120, default="", blank=True)
     omadaUsername = models.CharField(max_length=255, default="", blank=True)
@@ -77,6 +78,7 @@ class Asset(models.Model):
             "name": self.name,
             "initials": self.initials,
             "department": self.department,
+            "classification": self.classification,
             "email": self.email,
             "username": self.username,
             "omadaUsername": self.omadaUsername,
