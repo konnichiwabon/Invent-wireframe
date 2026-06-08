@@ -522,9 +522,15 @@ def asset_detail(request: HttpRequest, asset_id: str) -> HttpResponse:
     if request.method == "DELETE":
         if asset is None:
             return JsonResponse({"detail": "Asset not found"}, status=404)
-        asset.is_deleted = True
-        asset.version += 1
-        asset.save(update_fields=["is_deleted", "version"])
+
+        profile_picture_key = asset.profilePictureKey
+        device_photo_keys = list(asset.device_photos.values_list("objectKey", flat=True))
+        asset.delete()
+
+        delete_profile_picture(profile_picture_key)
+        for device_photo_key in device_photo_keys:
+            delete_device_photo(device_photo_key)
+
         return HttpResponse(status=204)
 
     return JsonResponse({"detail": "Method not allowed"}, status=405)
