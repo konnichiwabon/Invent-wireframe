@@ -36,6 +36,7 @@ ASSET_SCALAR_FIELDS = [
     "name",
     "initials",
     "department",
+    "classification",
     "email",
     "username",
     "omadaUsername",
@@ -240,12 +241,14 @@ def normalize_asset_payload(payload: dict[str, Any]) -> dict[str, Any]:
     asset_id = require_string(payload, "id")
     name = require_string(payload, "name")
     department = require_string(payload, "department")
+    legacy_classification = optional_string(payload, "availabilityStatus", "In Use")
 
     return {
         "id": asset_id,
         "name": name,
         "initials": optional_string(payload, "initials"),
         "department": department,
+        "classification": optional_string(payload, "classification", legacy_classification),
         "email": optional_string(payload, "email"),
         "username": optional_string(payload, "username"),
         "omadaUsername": optional_string(payload, "omadaUsername"),

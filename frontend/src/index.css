@@ -201,12 +201,42 @@ body {
   min-width: 0;
 }
 
+.card-title-row,
+.modal-title-row {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-width: 0;
+}
+
 .card-name {
   font-size: 0.92rem;
   font-weight: 700;
   color: var(--text-primary);
   line-height: 1.3;
   margin-bottom: 0.25rem;
+}
+
+.card-title-row .card-name {
+  margin-bottom: 0;
+}
+
+.classification-dot {
+  width: 0.62rem;
+  height: 0.62rem;
+  border-radius: 50%;
+  display: inline-flex;
+  flex-shrink: 0;
+  border: 2px solid #ffffff;
+  box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.12);
+}
+
+.classification-dot.in-use {
+  background: #22c55e;
+}
+
+.classification-dot.resigned {
+  background: #ef4444;
 }
 
 .card-meta {

@@ -41,8 +41,12 @@ const gridStyle = {
 };
 
 function normalizeEmployee(employee: Employee): Employee {
+  const legacyEmployee = employee as Employee & { availabilityStatus?: string };
+
   return {
     ...employee,
+    classification:
+      employee.classification ?? (legacyEmployee.availabilityStatus === "Resigned" ? "Resigned" : "In Use"),
     email: employee.email ?? "",
     devicePhotos: employee.devicePhotos ?? [],
     cpu: {

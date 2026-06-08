@@ -32,6 +32,8 @@ export interface DevicePhoto {
   uploadData?: string;
 }
 
+export type Classification = 'In Use' | 'Resigned';
+
 export interface NetworkSpec {
   hostname: string;
   macAddress: string;
@@ -61,6 +63,7 @@ export interface Employee {
   name: string;
   initials: string;
   department: string;
+  classification: Classification;
   email: string;
   username: string;
   omadaUsername: string;

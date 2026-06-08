@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import type { DevicePhoto, Employee, RamSpec, GpuSpec, StorageSpec } from '../types/inventory';
+import type { Classification, DevicePhoto, Employee, RamSpec, GpuSpec, StorageSpec } from '../types/inventory';
 import { getInitials, randomAvatarColor } from '../utils/helpers';
 
 interface EmployeeFormProps {
@@ -115,6 +115,7 @@ function newEmployee(): Employee {
     name: '',
     initials: '',
     department: '',
+    classification: 'In Use',
     email: '',
     username: '',
     omadaUsername: '',
@@ -146,6 +147,7 @@ function newEmployee(): Employee {
 function cloneEmployeeForForm(employee: Employee): Employee {
   return {
     ...employee,
+    classification: employee.classification ?? 'In Use',
     email: employee.email ?? '',
     cpu: {
       ...employee.cpu,
@@ -415,6 +417,17 @@ export default function EmployeeForm({ employee, onSave, onDelete, onClose }: Em
             <div className="form-grid">
               <FormField label="Full Name" value={form.name} onChange={(v) => set('name', v)} required />
               <FormField label="Department" value={form.department} onChange={(v) => set('department', v)} required />
+              <div className="form-field">
+                <label className="form-label">Classification</label>
+                <select
+                  className="form-input"
+                  value={form.classification}
+                  onChange={(e) => set('classification', e.target.value as Classification)}
+                >
+                  <option value="In Use">In Use</option>
+                  <option value="Resigned">Resigned</option>
+                </select>
+              </div>
               <FormField label="Email" value={form.email ?? ''} onChange={(v) => set('email', v)} type="email" />
               <FormField label="Username" value={form.username} onChange={(v) => set('username', v)} />
               <FormField label="Omada Name" value={form.omadaUsername} onChange={(v) => set('omadaUsername', v)} />

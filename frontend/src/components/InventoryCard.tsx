@@ -19,6 +19,8 @@ export default function InventoryCard({
   const deptStyle = getDeptStyle(employee.department);
   const profilePictureUrl = employee.profilePictureUrl?.trim();
   const idTag = employee.idTag?.trim();
+  const classification = employee.classification ?? 'In Use';
+  const classificationClass = classification === 'Resigned' ? 'resigned' : 'in-use';
   const totalRam = employee.ram.reduce((sum, r) => {
     const num = parseFloat(r.totalMemory) || 0;
     return sum + num;
@@ -59,7 +61,14 @@ export default function InventoryCard({
           </span>
         </button>
         <div className="card-info">
-          <div className="card-name">{employee.name}</div>
+          <div className="card-title-row">
+            <div className="card-name">{employee.name}</div>
+            <span
+              className={`classification-dot ${classificationClass}`}
+              title={classification}
+              aria-label={`Classification: ${classification}`}
+            />
+          </div>
           <div className="card-meta">
             <span
               className="dept-badge"
