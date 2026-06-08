@@ -11,7 +11,7 @@ export const defaultEmployees: Employee[] = [
     omadaUsername: 'LAB-PC-01',
     avatarColor: '#4CAF50',
     dateAsOf: '2026-05-20',
-    cpu: { model: 'Intel Core i9-13900K', cores: 24 },
+    cpu: { manufacturer: 'Intel', model: 'Intel Core i9-13900K', cores: 24 },
     ram: [
       { serialNumber: 'RAM-SN-00A1B2', model: 'Corsair Vengeance DDR5', speed: '5200 MHz', totalMemory: '16 GB' },
       { serialNumber: 'RAM-SN-00A1B3', model: 'Corsair Vengeance DDR5', speed: '5200 MHz', totalMemory: '16 GB' },
@@ -37,7 +37,7 @@ export const defaultEmployees: Employee[] = [
     omadaUsername: 'MKT-PC-07',
     avatarColor: '#9C27B0',
     dateAsOf: '2026-05-20',
-    cpu: { model: 'AMD Ryzen 7 7700X', cores: 8 },
+    cpu: { manufacturer: 'AMD', model: 'AMD Ryzen 7 7700X', cores: 8 },
     ram: [
       { serialNumber: 'RAM-SN-00C3D4', model: 'G.Skill Trident Z5', speed: '6000 MHz', totalMemory: '16 GB' },
       { serialNumber: 'RAM-SN-00C3D5', model: 'G.Skill Trident Z5', speed: '6000 MHz', totalMemory: '16 GB' },
@@ -62,7 +62,7 @@ export const defaultEmployees: Employee[] = [
     omadaUsername: 'LAB-PC-03',
     avatarColor: '#FF9800',
     dateAsOf: '2026-05-18',
-    cpu: { model: 'Intel Core i7-12700', cores: 12 },
+    cpu: { manufacturer: 'Intel', model: 'Intel Core i7-12700', cores: 12 },
     ram: [
       { serialNumber: 'RAM-SN-00E5F6', model: 'Kingston Fury Beast DDR4', speed: '3200 MHz', totalMemory: '16 GB' },
     ],
@@ -86,7 +86,7 @@ export const defaultEmployees: Employee[] = [
     omadaUsername: 'HR-PC-02',
     avatarColor: '#F44336',
     dateAsOf: '2026-05-19',
-    cpu: { model: 'Intel Core i5-13400', cores: 10 },
+    cpu: { manufacturer: 'Intel', model: 'Intel Core i5-13400', cores: 10 },
     ram: [
       { serialNumber: 'RAM-SN-00G7H8', model: 'Crucial Ballistix DDR4', speed: '3600 MHz', totalMemory: '8 GB' },
     ],
@@ -110,7 +110,7 @@ export const defaultEmployees: Employee[] = [
     omadaUsername: 'FIN-PC-05',
     avatarColor: '#2196F3',
     dateAsOf: '2026-05-20',
-    cpu: { model: 'AMD Ryzen 5 5600X', cores: 6 },
+    cpu: { manufacturer: 'AMD', model: 'AMD Ryzen 5 5600X', cores: 6 },
     ram: [
       { serialNumber: 'RAM-SN-00I9J0', model: 'Corsair Vengeance DDR4', speed: '3200 MHz', totalMemory: '8 GB' },
       { serialNumber: 'RAM-SN-00I9J1', model: 'Corsair Vengeance DDR4', speed: '3200 MHz', totalMemory: '8 GB' },
@@ -135,7 +135,7 @@ export const defaultEmployees: Employee[] = [
     omadaUsername: 'OPS-PC-09',
     avatarColor: '#607D8B',
     dateAsOf: '2026-05-17',
-    cpu: { model: 'Intel Core i7-13700', cores: 16 },
+    cpu: { manufacturer: 'Intel', model: 'Intel Core i7-13700', cores: 16 },
     ram: [
       { serialNumber: 'RAM-SN-00K1L2', model: 'Kingston Fury DDR5', speed: '4800 MHz', totalMemory: '16 GB' },
     ],
@@ -159,7 +159,7 @@ export const defaultEmployees: Employee[] = [
     omadaUsername: 'DES-PC-04',
     avatarColor: '#009688',
     dateAsOf: '2026-05-20',
-    cpu: { model: 'AMD Ryzen 9 7950X', cores: 16 },
+    cpu: { manufacturer: 'AMD', model: 'AMD Ryzen 9 7950X', cores: 16 },
     ram: [
       { serialNumber: 'RAM-SN-00M3N4', model: 'G.Skill Trident Z5 RGB DDR5', speed: '6400 MHz', totalMemory: '32 GB' },
       { serialNumber: 'RAM-SN-00M3N5', model: 'G.Skill Trident Z5 RGB DDR5', speed: '6400 MHz', totalMemory: '32 GB' },
@@ -186,7 +186,7 @@ export const defaultEmployees: Employee[] = [
     omadaUsername: 'SEC-PC-11',
     avatarColor: '#673AB7',
     dateAsOf: '2026-05-20',
-    cpu: { model: 'Intel Core i9-14900K', cores: 24 },
+    cpu: { manufacturer: 'Intel', model: 'Intel Core i9-14900K', cores: 24 },
     ram: [
       { serialNumber: 'RAM-SN-00O5P6', model: 'Corsair Dominator DDR5', speed: '6600 MHz', totalMemory: '32 GB' },
       { serialNumber: 'RAM-SN-00O5P7', model: 'Corsair Dominator DDR5', speed: '6600 MHz', totalMemory: '32 GB' },
@@ -212,7 +212,7 @@ export const defaultEmployees: Employee[] = [
     omadaUsername: 'ENG-PC-12',
     avatarColor: '#0EA5E9',
     dateAsOf: '2026-05-21',
-    cpu: { model: 'Intel Core Ultra 7 265K', cores: 20 },
+    cpu: { manufacturer: 'Intel', model: 'Intel Core Ultra 7 265K', cores: 20 },
     ram: [
       { serialNumber: 'RAM-SN-00Q7R8', model: 'Kingston Fury DDR5', speed: '5600 MHz', totalMemory: '16 GB' },
       { serialNumber: 'RAM-SN-00Q7R9', model: 'Kingston Fury DDR5', speed: '5600 MHz', totalMemory: '16 GB' },
@@ -237,7 +237,7 @@ export const defaultEmployees: Employee[] = [
     omadaUsername: 'SUP-PC-06',
     avatarColor: '#14B8A6',
     dateAsOf: '2026-05-21',
-    cpu: { model: 'AMD Ryzen 5 7600', cores: 6 },
+    cpu: { manufacturer: 'AMD', model: 'AMD Ryzen 5 7600', cores: 6 },
     ram: [
       { serialNumber: 'RAM-SN-00S9T0', model: 'Crucial Pro DDR5', speed: '5600 MHz', totalMemory: '16 GB' },
     ],
