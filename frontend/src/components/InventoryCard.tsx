@@ -25,6 +25,12 @@ export default function InventoryCard({
   }, 0);
   const primaryGpu = employee.gpu[0];
   const primaryStorage = employee.storage[0];
+  const extraStorageCount = Math.max(employee.storage.length - 1, 0);
+  const extraStorageSummary = employee.storage
+    .slice(1)
+    .map((storage) => [storage.capacity, storage.type].filter(Boolean).join(' '))
+    .filter(Boolean)
+    .join(', ');
 
   return (
     <div
@@ -61,7 +67,7 @@ export default function InventoryCard({
             >
               {employee.department}
             </span>
-            {idTag && <span className="id-tag">ID {idTag}</span>}
+            <span className="id-tag">ID TAG {idTag || '-'}</span>
             <span className="pc-id">{employee.network.hostname}</span>
           </div>
         </div>
@@ -80,11 +86,15 @@ export default function InventoryCard({
         </div>
         <div className="spec-row">
           <span className="spec-label">Email</span>
-          <span className="spec-value spec-value-small">{employee.omadaUsername}</span>
+          <span className="spec-value spec-value-small">{employee.email || '-'}</span>
+        </div>
+        <div className="spec-row">
+          <span className="spec-label">Username</span>
+          <span className="spec-value spec-value-small">{employee.username || '-'}</span>
         </div>
         <div className="spec-row">
           <span className="spec-label">Omada</span>
-          <span className="spec-value">{employee.username}</span>
+          <span className="spec-value">{employee.omadaUsername || '-'}</span>
         </div>
       </div>
 
@@ -98,6 +108,10 @@ export default function InventoryCard({
             </svg>
           </span>
           <span>HARDWARE</span>
+        </div>
+        <div className="spec-row">
+          <span className="spec-label">Case</span>
+          <span className="spec-value">{employee.system.chassisName || '-'}</span>
         </div>
         <div className="spec-row">
           <span className="spec-label">CPU</span>
@@ -133,17 +147,25 @@ export default function InventoryCard({
             </svg>
           </span>
           <span>STORAGE</span>
+          {extraStorageCount > 0 && (
+            <span
+              className="storage-extra-badge"
+              title={extraStorageSummary ? `Additional storage: ${extraStorageSummary}` : undefined}
+            >
+              +{extraStorageCount} drive{extraStorageCount > 1 ? 's' : ''}
+            </span>
+          )}
         </div>
         {primaryStorage && (
           <>
             <div className="spec-row">
-              <span className="spec-label">Type</span>
+              <span className="spec-label">Main Storage Type</span>
               <span className={`storage-badge ${getStorageClass(primaryStorage.type)}`}>
                 {primaryStorage.type}
               </span>
             </div>
             <div className="spec-row">
-              <span className="spec-label">Capacity</span>
+              <span className="spec-label">Main Storage Capacity</span>
               <span className="storage-badge capacity">{primaryStorage.capacity}</span>
             </div>
           </>

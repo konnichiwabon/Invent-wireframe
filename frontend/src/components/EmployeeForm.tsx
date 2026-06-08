@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import type { Employee, RamSpec, GpuSpec, StorageSpec } from '../types/inventory';
+import type { DevicePhoto, Employee, RamSpec, GpuSpec, StorageSpec } from '../types/inventory';
 import { getInitials, randomAvatarColor } from '../utils/helpers';
 
 interface EmployeeFormProps {
@@ -14,6 +14,7 @@ const blankRam: RamSpec = { serialNumber: '', model: '', speed: '', totalMemory:
 const blankGpu: GpuSpec = { serial: '', manufacturer: '', model: '', ram: '' };
 const blankStorage: StorageSpec = { serialNumber: '', type: '', capacity: '' };
 const profilePictureSize = 256;
+const devicePhotoMaxDimension = 1600;
 
 function readFileAsDataUrl(file: File): Promise<string> {
   return new Promise((resolve, reject) => {
@@ -71,12 +72,50 @@ function createProfilePictureThumbnail(file: File): Promise<string> {
   });
 }
 
+function createDevicePhotoDataUrl(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      const image = new Image();
+
+      image.onload = () => {
+        const canvas = document.createElement('canvas');
+        const context = canvas.getContext('2d');
+
+        if (!context) {
+          reject(new Error('Image processing is unavailable'));
+          return;
+        }
+
+        const largestSide = Math.max(image.naturalWidth, image.naturalHeight);
+        const scale = largestSide > devicePhotoMaxDimension ? devicePhotoMaxDimension / largestSide : 1;
+
+        canvas.width = Math.max(1, Math.round(image.naturalWidth * scale));
+        canvas.height = Math.max(1, Math.round(image.naturalHeight * scale));
+        context.fillStyle = '#ffffff';
+        context.fillRect(0, 0, canvas.width, canvas.height);
+        context.drawImage(image, 0, 0, canvas.width, canvas.height);
+
+        resolve(canvas.toDataURL('image/jpeg', 0.84));
+      };
+
+      image.onerror = () => reject(new Error('Unable to load image'));
+      image.src = String(reader.result);
+    };
+
+    reader.onerror = () => reject(new Error('Unable to read image'));
+    reader.readAsDataURL(file);
+  });
+}
+
 function newEmployee(): Employee {
   return {
     id: crypto.randomUUID(),
     name: '',
     initials: '',
     department: '',
+    email: '',
     username: '',
     omadaUsername: '',
     idTag: '',
@@ -90,21 +129,52 @@ function newEmployee(): Employee {
     ram: [{ ...blankRam }],
     gpu: [{ ...blankGpu }],
     storage: [{ ...blankStorage }],
+    devicePhotos: [],
     network: { hostname: '', macAddress: '', dhcp: true, currentIp: '', portNumber: '' },
-    peripherals: { keyboardBrand: '', mouseBrand: '', monitor: '' },
-    system: { motherboardSn: '', biosSerialNumber: '', osVersion: '' },
+    peripherals: {
+      keyboardBrand: '',
+      keyboardSerialNumber: '',
+      mouseBrand: '',
+      mouseSerialNumber: '',
+      monitor: '',
+      monitorSerialNumber: '',
+    },
+    system: { chassisName: '', motherboardSn: '', biosSerialNumber: '', osVersion: '' },
+  };
+}
+
+function cloneEmployeeForForm(employee: Employee): Employee {
+  return {
+    ...employee,
+    email: employee.email ?? '',
+    system: {
+      ...employee.system,
+      chassisName: employee.system.chassisName ?? '',
+    },
+    peripherals: {
+      ...employee.peripherals,
+      keyboardSerialNumber: employee.peripherals.keyboardSerialNumber ?? '',
+      mouseSerialNumber: employee.peripherals.mouseSerialNumber ?? '',
+      monitorSerialNumber: employee.peripherals.monitorSerialNumber ?? '',
+    },
+    ram: employee.ram.map((r) => ({ ...r })),
+    gpu: employee.gpu.map((g) => ({ ...g })),
+    storage: employee.storage.map((s) => ({ ...s })),
+    devicePhotos: (employee.devicePhotos ?? []).map((photo) => ({ ...photo })),
   };
 }
 
 export default function EmployeeForm({ employee, onSave, onDelete, onClose }: EmployeeFormProps) {
   const isEdit = !!employee;
-  const [form, setForm] = useState<Employee>(() => (employee ? { ...employee, ram: employee.ram.map(r => ({ ...r })), gpu: employee.gpu.map(g => ({ ...g })), storage: employee.storage.map(s => ({ ...s })) } : newEmployee()));
+  const [form, setForm] = useState<Employee>(() => (employee ? cloneEmployeeForForm(employee) : newEmployee()));
   const [isSaving, setIsSaving] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const isMountedRef = useRef(true);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const devicePhotoInputRef = useRef<HTMLInputElement>(null);
   const isBusy = isSaving || isDeleting;
   const profilePictureUrl = form.profilePictureUrl?.trim();
+  const devicePhotos = form.devicePhotos ?? [];
 
   useEffect(() => {
     return () => {
@@ -181,6 +251,38 @@ export default function EmployeeForm({ employee, onSave, onDelete, onClose }: Em
     }
   }
 
+  async function handleDevicePhotosChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const files = Array.from(e.target.files ?? []);
+    e.target.value = '';
+
+    if (files.length === 0) return;
+
+    const invalidFile = files.find((file) => !file.type.startsWith('image/'));
+    if (invalidFile) {
+      window.alert('Please choose image files only.');
+      return;
+    }
+
+    try {
+      const preparedPhotos: DevicePhoto[] = await Promise.all(
+        files.map(async (file) => {
+          const dataUrl = await createDevicePhotoDataUrl(file);
+          return {
+            url: dataUrl,
+            uploadData: dataUrl,
+          };
+        }),
+      );
+
+      setForm((prev) => ({
+        ...prev,
+        devicePhotos: [...(prev.devicePhotos ?? []), ...preparedPhotos],
+      }));
+    } catch (error) {
+      window.alert(error instanceof Error ? error.message : 'Unable to prepare device photos.');
+    }
+  }
+
   /* ── Array helpers ── */
   function updateRam(index: number, key: keyof RamSpec, value: string) {
     setForm((prev) => {
@@ -208,6 +310,13 @@ export default function EmployeeForm({ employee, onSave, onDelete, onClose }: Em
   }
   function addStorage() { setForm((prev) => ({ ...prev, storage: [...prev.storage, { ...blankStorage }] })); }
   function removeStorage(index: number) { setForm((prev) => ({ ...prev, storage: prev.storage.filter((_, i) => i !== index) })); }
+
+  function removeDevicePhoto(index: number) {
+    setForm((prev) => ({
+      ...prev,
+      devicePhotos: (prev.devicePhotos ?? []).filter((_, i) => i !== index),
+    }));
+  }
 
   /* ── Submit ── */
   async function handleSubmit(e: React.FormEvent) {
@@ -302,8 +411,9 @@ export default function EmployeeForm({ employee, onSave, onDelete, onClose }: Em
             <div className="form-grid">
               <FormField label="Full Name" value={form.name} onChange={(v) => set('name', v)} required />
               <FormField label="Department" value={form.department} onChange={(v) => set('department', v)} required />
+              <FormField label="Email" value={form.email ?? ''} onChange={(v) => set('email', v)} type="email" />
               <FormField label="Username" value={form.username} onChange={(v) => set('username', v)} />
-              <FormField label="Omada Username" value={form.omadaUsername} onChange={(v) => set('omadaUsername', v)} />
+              <FormField label="Omada Name" value={form.omadaUsername} onChange={(v) => set('omadaUsername', v)} />
               <FormField label="ID Tag" value={form.idTag ?? ''} onChange={(v) => set('idTag', v)} />
               <FormField label="Date (as of)" value={form.dateAsOf} onChange={(v) => set('dateAsOf', v)} type="date" />
             </div>
@@ -313,6 +423,7 @@ export default function EmployeeForm({ employee, onSave, onDelete, onClose }: Em
           <fieldset className="form-section">
             <legend className="form-section-title">🔧 System</legend>
             <div className="form-grid">
+              <FormField label="Case" value={form.system.chassisName} onChange={(v) => setSystem('chassisName', v)} />
               <FormField label="Motherboard SN" value={form.system.motherboardSn} onChange={(v) => setSystem('motherboardSn', v)} />
               <FormField label="BIOS Serial Number" value={form.system.biosSerialNumber} onChange={(v) => setSystem('biosSerialNumber', v)} />
               <FormField label="OS Version" value={form.system.osVersion} onChange={(v) => setSystem('osVersion', v)} />
@@ -387,7 +498,10 @@ export default function EmployeeForm({ employee, onSave, onDelete, onClose }: Em
             {form.storage.map((s, i) => (
               <div key={i} className="array-group">
                 <div className="array-group-header">
-                  <span className="array-group-label">Drive {i + 1}</span>
+                  <span className="array-group-label">
+                    Drive {i + 1}
+                    {i === 0 && <span className="main-drive-badge">Main</span>}
+                  </span>
                   {form.storage.length > 1 && (
                     <button type="button" className="array-remove-btn" onClick={() => removeStorage(i)}>✕ Remove</button>
                   )}
@@ -429,9 +543,60 @@ export default function EmployeeForm({ employee, onSave, onDelete, onClose }: Em
             <legend className="form-section-title">🖱️ Peripherals</legend>
             <div className="form-grid">
               <FormField label="Keyboard Brand" value={form.peripherals.keyboardBrand} onChange={(v) => setPeripherals('keyboardBrand', v)} />
+              <FormField label="Keyboard Serial Number" value={form.peripherals.keyboardSerialNumber} onChange={(v) => setPeripherals('keyboardSerialNumber', v)} />
               <FormField label="Mouse Brand" value={form.peripherals.mouseBrand} onChange={(v) => setPeripherals('mouseBrand', v)} />
+              <FormField label="Mouse Serial Number" value={form.peripherals.mouseSerialNumber} onChange={(v) => setPeripherals('mouseSerialNumber', v)} />
               <FormField label="Monitor" value={form.peripherals.monitor} onChange={(v) => setPeripherals('monitor', v)} />
+              <FormField label="Monitor Serial Number" value={form.peripherals.monitorSerialNumber} onChange={(v) => setPeripherals('monitorSerialNumber', v)} />
             </div>
+          </fieldset>
+
+          {/* Device Pictures */}
+          <fieldset className="form-section">
+            <legend className="form-section-title">
+              Device Pictures
+              <span className="array-count">{devicePhotos.length} photo{devicePhotos.length !== 1 ? 's' : ''}</span>
+            </legend>
+            <input
+              ref={devicePhotoInputRef}
+              className="profile-picture-input"
+              type="file"
+              accept="image/*"
+              multiple
+              onChange={handleDevicePhotosChange}
+            />
+            {devicePhotos.length > 0 ? (
+              <div className="device-photo-grid">
+                {devicePhotos.map((photo, i) => (
+                  <div key={`${photo.objectKey || photo.url}-${i}`} className="device-photo-tile">
+                    <img className="device-photo-image" src={photo.url} alt={`Device ${i + 1}`} />
+                    <div className="device-photo-footer">
+                      <span>Photo {i + 1}</span>
+                      {photo.objectKey && <span className="device-photo-state">R2</span>}
+                    </div>
+                    <button
+                      type="button"
+                      className="device-photo-remove"
+                      onClick={() => removeDevicePhoto(i)}
+                      disabled={isBusy}
+                      aria-label={`Remove device photo ${i + 1}`}
+                    >
+                      Remove
+                    </button>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="device-photo-empty">No device pictures added yet.</div>
+            )}
+            <button
+              type="button"
+              className="array-add-btn"
+              onClick={() => devicePhotoInputRef.current?.click()}
+              disabled={isBusy}
+            >
+              + Add Device Pictures
+            </button>
           </fieldset>
 
           {/* ── Actions ── */}

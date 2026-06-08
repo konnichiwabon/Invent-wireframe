@@ -70,6 +70,7 @@ export function filterEmployees(
     const term = searchTerm.toLowerCase();
     return (
       emp.name.toLowerCase().includes(term) ||
+      (emp.email ?? '').toLowerCase().includes(term) ||
       emp.username.toLowerCase().includes(term) ||
       emp.omadaUsername.toLowerCase().includes(term) ||
       emp.network.hostname.toLowerCase().includes(term) ||
@@ -79,6 +80,10 @@ export function filterEmployees(
       emp.network.macAddress.toLowerCase().includes(term) ||
       emp.system.biosSerialNumber.toLowerCase().includes(term) ||
       emp.system.motherboardSn.toLowerCase().includes(term) ||
+      emp.system.chassisName.toLowerCase().includes(term) ||
+      emp.peripherals.keyboardSerialNumber.toLowerCase().includes(term) ||
+      emp.peripherals.mouseSerialNumber.toLowerCase().includes(term) ||
+      emp.peripherals.monitorSerialNumber.toLowerCase().includes(term) ||
       emp.gpu.some((g) => g.model.toLowerCase().includes(term) || g.manufacturer.toLowerCase().includes(term)) ||
       emp.ram.some((r) => r.model.toLowerCase().includes(term) || r.serialNumber.toLowerCase().includes(term)) ||
       emp.storage.some((s) => s.serialNumber.toLowerCase().includes(term) || s.type.toLowerCase().includes(term))

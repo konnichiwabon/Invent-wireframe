@@ -25,6 +25,12 @@ export interface StorageSpec {
   capacity: string;
 }
 
+export interface DevicePhoto {
+  objectKey?: string;
+  url: string;
+  uploadData?: string;
+}
+
 export interface NetworkSpec {
   hostname: string;
   macAddress: string;
@@ -35,11 +41,15 @@ export interface NetworkSpec {
 
 export interface PeripheralSpec {
   keyboardBrand: string;
+  keyboardSerialNumber: string;
   mouseBrand: string;
+  mouseSerialNumber: string;
   monitor: string;
+  monitorSerialNumber: string;
 }
 
 export interface SystemSpec {
+  chassisName: string;
   motherboardSn: string;
   biosSerialNumber: string;
   osVersion: string;
@@ -50,6 +60,7 @@ export interface Employee {
   name: string;
   initials: string;
   department: string;
+  email: string;
   username: string;
   omadaUsername: string;
   idTag?: string;
@@ -63,6 +74,7 @@ export interface Employee {
   ram: RamSpec[];
   gpu: GpuSpec[];
   storage: StorageSpec[];
+  devicePhotos?: DevicePhoto[];
   network: NetworkSpec;
   peripherals: PeripheralSpec;
   system: SystemSpec;

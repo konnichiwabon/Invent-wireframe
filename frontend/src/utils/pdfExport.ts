@@ -17,16 +17,16 @@ export function exportInventoryToPDF(employees: Employee[]) {
   doc.setFontSize(10);
   doc.text(`Generated on: ${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}`, 40, 60);
 
-  // Define the columns based on the requested 28 fields
+  // Define the columns based on the requested inventory fields
   const head = [[
-    'Department', 'Username', 'Omada Username',
+    'Department', 'Email', 'Username', 'Omada Name',
     'Hostname', 'MAC Address', 'DHCP?', 'Current IP', 'Port Number',
     'CPU Model', 'Cores',
     'RAM SN', 'RAM Model', 'Speed', 'Total Memory',
     'Storage SN', 'Storage Type', 'Capacity',
     'GPU Serial', 'GPU Manufacturer', 'GPU Model', 'GPU RAM',
-    'Motherboard SN', 'BIOS SN', 'OS Version',
-    'Keyboard', 'Mouse', 'Monitor',
+    'Case', 'Motherboard SN', 'BIOS SN', 'OS Version',
+    'Keyboard', 'Keyboard SN', 'Mouse', 'Mouse SN', 'Monitor', 'Monitor SN',
     'Date (as of)'
   ]];
 
@@ -48,6 +48,7 @@ export function exportInventoryToPDF(employees: Employee[]) {
 
     return [
       emp.department,
+      emp.email ?? '',
       emp.username,
       emp.omadaUsername,
       emp.network.hostname,
@@ -73,13 +74,17 @@ export function exportInventoryToPDF(employees: Employee[]) {
       gpuModel,
       gpuRam,
       
+      emp.system.chassisName,
       emp.system.motherboardSn,
       emp.system.biosSerialNumber,
       emp.system.osVersion,
       
       emp.peripherals.keyboardBrand,
+      emp.peripherals.keyboardSerialNumber,
       emp.peripherals.mouseBrand,
+      emp.peripherals.mouseSerialNumber,
       emp.peripherals.monitor,
+      emp.peripherals.monitorSerialNumber,
       
       formatDate(emp.dateAsOf)
     ];

@@ -8,6 +8,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 from .models import (
     Asset,
+    AssetDevicePhoto,
     CpuSpec,
     GpuSpec,
     NetworkSpec,
@@ -22,8 +23,10 @@ from .models import (
 )
 from .r2_storage import (
     R2StorageError,
+    delete_device_photo,
     delete_profile_picture,
     get_profile_picture_url,
+    upload_device_photo,
     upload_profile_picture,
 )
 
@@ -33,6 +36,7 @@ ASSET_SCALAR_FIELDS = [
     "name",
     "initials",
     "department",
+    "email",
     "username",
     "omadaUsername",
     "idTag",
@@ -184,13 +188,17 @@ def normalize_network(payload: dict[str, Any]) -> dict[str, object]:
 def normalize_peripherals(payload: dict[str, Any]) -> dict[str, object]:
     return {
         "keyboardBrand": optional_string(payload, "keyboardBrand"),
+        "keyboardSerialNumber": optional_string(payload, "keyboardSerialNumber"),
         "mouseBrand": optional_string(payload, "mouseBrand"),
+        "mouseSerialNumber": optional_string(payload, "mouseSerialNumber"),
         "monitor": optional_string(payload, "monitor"),
+        "monitorSerialNumber": optional_string(payload, "monitorSerialNumber"),
     }
 
 
 def normalize_system(payload: dict[str, Any]) -> dict[str, object]:
     return {
+        "chassisName": optional_string(payload, "chassisName"),
         "motherboardSn": optional_string(payload, "motherboardSn"),
         "biosSerialNumber": optional_string(payload, "biosSerialNumber"),
         "osVersion": optional_string(payload, "osVersion"),
@@ -219,6 +227,14 @@ def normalize_spec_list(
     return normalized
 
 
+def normalize_device_photo(payload: dict[str, Any]) -> dict[str, str]:
+    return {
+        "objectKey": optional_string(payload, "objectKey"),
+        "url": optional_string(payload, "url"),
+        "uploadData": optional_string(payload, "uploadData"),
+    }
+
+
 def normalize_asset_payload(payload: dict[str, Any]) -> dict[str, Any]:
     asset_id = require_string(payload, "id")
     name = require_string(payload, "name")
@@ -229,6 +245,7 @@ def normalize_asset_payload(payload: dict[str, Any]) -> dict[str, Any]:
         "name": name,
         "initials": optional_string(payload, "initials"),
         "department": department,
+        "email": optional_string(payload, "email"),
         "username": optional_string(payload, "username"),
         "omadaUsername": optional_string(payload, "omadaUsername"),
         "idTag": optional_string(payload, "idTag"),
@@ -241,6 +258,7 @@ def normalize_asset_payload(payload: dict[str, Any]) -> dict[str, Any]:
         "ram": normalize_spec_list(payload, "ram", normalize_ram),
         "gpu": normalize_spec_list(payload, "gpu", normalize_gpu),
         "storage": normalize_spec_list(payload, "storage", normalize_storage),
+        "devicePhotos": normalize_spec_list(payload, "devicePhotos", normalize_device_photo),
         "network": normalize_spec_object(
             payload,
             "network",
@@ -263,7 +281,7 @@ def asset_queryset() -> models.QuerySet[Asset]:
         "network_spec",
         "peripheral_spec",
         "system_spec",
-    ).prefetch_related("ram_specs", "gpu_specs", "storage_specs")
+    ).prefetch_related("ram_specs", "gpu_specs", "storage_specs", "device_photos")
 
 
 def set_asset_scalars(asset: Asset, payload: dict[str, Any]) -> None:
@@ -338,6 +356,35 @@ def save_asset_specs(asset: Asset, payload: dict[str, Any]) -> None:
         replace_child_specs(model, asset, payload[field])
 
 
+def save_device_photos(asset: Asset, payloads: list[dict[str, str]]) -> None:
+    old_keys = list(asset.device_photos.values_list("objectKey", flat=True))
+    desired_keys = []
+
+    for payload in payloads:
+        upload_data = payload["uploadData"].strip()
+        object_key = payload["objectKey"].strip()
+
+        if upload_data:
+            desired_keys.append(upload_device_photo(asset.id, upload_data))
+            continue
+
+        if object_key:
+            desired_keys.append(object_key)
+
+    AssetDevicePhoto.objects.filter(asset=asset).delete()
+    AssetDevicePhoto.objects.bulk_create(
+        [
+            AssetDevicePhoto(asset=asset, objectKey=object_key, position=index)
+            for index, object_key in enumerate(desired_keys)
+        ]
+    )
+
+    desired_key_set = set(desired_keys)
+    for old_key in old_keys:
+        if old_key not in desired_key_set:
+            delete_device_photo(old_key)
+
+
 @csrf_exempt
 def assets_collection(request: HttpRequest) -> HttpResponse:
     if request.method == "GET":
@@ -373,7 +420,9 @@ def assets_collection(request: HttpRequest) -> HttpResponse:
                     payload["profilePictureUploadData"],
                 )
                 save_asset_specs(existing_asset, payload)
-                return JsonResponse(existing_asset.to_dict(), status=201)
+                save_device_photos(existing_asset, payload["devicePhotos"])
+                saved_asset = asset_queryset().get(id=existing_asset.id)
+                return JsonResponse(saved_asset.to_dict(), status=201)
 
             asset = Asset()
             set_asset_scalars(asset, payload)
@@ -385,7 +434,9 @@ def assets_collection(request: HttpRequest) -> HttpResponse:
                 payload["profilePictureUploadData"],
             )
             save_asset_specs(asset, payload)
-            return JsonResponse(asset.to_dict(), status=201)
+            save_device_photos(asset, payload["devicePhotos"])
+            saved_asset = asset_queryset().get(id=asset.id)
+            return JsonResponse(saved_asset.to_dict(), status=201)
         except R2StorageError as error:
             transaction.set_rollback(True)
             return JsonResponse({"detail": str(error)}, status=502)
@@ -459,11 +510,13 @@ def asset_detail(request: HttpRequest, asset_id: str) -> HttpResponse:
                     payload["profilePictureUploadData"],
                 )
                 save_asset_specs(asset, payload)
+                save_device_photos(asset, payload["devicePhotos"])
             except R2StorageError as error:
                 transaction.set_rollback(True)
                 return JsonResponse({"detail": str(error)}, status=502)
 
-        return JsonResponse(asset.to_dict())
+        saved_asset = asset_queryset().get(id=asset.id)
+        return JsonResponse(saved_asset.to_dict())
 
     if request.method == "DELETE":
         if asset is None:

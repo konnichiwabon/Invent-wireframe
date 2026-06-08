@@ -17,11 +17,18 @@ def default_network() -> dict[str, object]:
 
 
 def default_peripherals() -> dict[str, str]:
-    return {"keyboardBrand": "", "mouseBrand": "", "monitor": ""}
+    return {
+        "keyboardBrand": "",
+        "keyboardSerialNumber": "",
+        "mouseBrand": "",
+        "mouseSerialNumber": "",
+        "monitor": "",
+        "monitorSerialNumber": "",
+    }
 
 
 def default_system() -> dict[str, str]:
-    return {"motherboardSn": "", "biosSerialNumber": "", "osVersion": ""}
+    return {"chassisName": "", "motherboardSn": "", "biosSerialNumber": "", "osVersion": ""}
 
 
 class Asset(models.Model):
@@ -29,6 +36,7 @@ class Asset(models.Model):
     name = models.CharField(max_length=255)
     initials = models.CharField(max_length=16, default="", blank=True)
     department = models.CharField(max_length=120, db_index=True)
+    email = models.CharField(max_length=255, default="", blank=True)
     username = models.CharField(max_length=120, default="", blank=True)
     omadaUsername = models.CharField(max_length=255, default="", blank=True)
     idTag = models.CharField(max_length=120, default="", blank=True)
@@ -69,6 +77,7 @@ class Asset(models.Model):
             "name": self.name,
             "initials": self.initials,
             "department": self.department,
+            "email": self.email,
             "username": self.username,
             "omadaUsername": self.omadaUsername,
             "idTag": self.idTag,
@@ -81,9 +90,37 @@ class Asset(models.Model):
             "ram": [ram.to_dict() for ram in self.ram_specs.all()],
             "gpu": [gpu.to_dict() for gpu in self.gpu_specs.all()],
             "storage": [storage.to_dict() for storage in self.storage_specs.all()],
+            "devicePhotos": [photo.to_dict() for photo in self.device_photos.all()],
             "network": self.related_dict("network_spec", default_network()),
             "peripherals": self.related_dict("peripheral_spec", default_peripherals()),
             "system": self.related_dict("system_spec", default_system()),
+        }
+
+
+class AssetDevicePhoto(models.Model):
+    asset = models.ForeignKey(Asset, on_delete=models.CASCADE, related_name="device_photos")
+    objectKey = models.TextField(default="", blank=True)
+    position = models.PositiveIntegerField(default=0)
+    createdAt = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["position", "id"]
+
+    def __str__(self) -> str:
+        return f"Device photo {self.position} for {self.asset_id}"
+
+    def display_url(self) -> str:
+        if not self.objectKey:
+            return ""
+
+        from .r2_storage import get_device_photo_url
+
+        return get_device_photo_url(self.objectKey)
+
+    def to_dict(self) -> dict[str, object]:
+        return {
+            "objectKey": self.objectKey,
+            "url": self.display_url(),
         }
 
 
@@ -205,8 +242,11 @@ class PeripheralSpec(models.Model):
         related_name="peripheral_spec",
     )
     keyboardBrand = models.CharField(max_length=255, default="", blank=True)
+    keyboardSerialNumber = models.CharField(max_length=255, default="", blank=True)
     mouseBrand = models.CharField(max_length=255, default="", blank=True)
+    mouseSerialNumber = models.CharField(max_length=255, default="", blank=True)
     monitor = models.CharField(max_length=255, default="", blank=True)
+    monitorSerialNumber = models.CharField(max_length=255, default="", blank=True)
 
     def __str__(self) -> str:
         return f"Peripherals for {self.asset_id}"
@@ -214,8 +254,11 @@ class PeripheralSpec(models.Model):
     def to_dict(self) -> dict[str, object]:
         return {
             "keyboardBrand": self.keyboardBrand,
+            "keyboardSerialNumber": self.keyboardSerialNumber,
             "mouseBrand": self.mouseBrand,
+            "mouseSerialNumber": self.mouseSerialNumber,
             "monitor": self.monitor,
+            "monitorSerialNumber": self.monitorSerialNumber,
         }
 
 
@@ -226,6 +269,7 @@ class SystemSpec(models.Model):
         primary_key=True,
         related_name="system_spec",
     )
+    chassisName = models.CharField(max_length=255, default="", blank=True)
     motherboardSn = models.CharField(max_length=255, default="", blank=True)
     biosSerialNumber = models.CharField(max_length=255, default="", blank=True)
     osVersion = models.CharField(max_length=255, default="", blank=True)
@@ -235,6 +279,7 @@ class SystemSpec(models.Model):
 
     def to_dict(self) -> dict[str, object]:
         return {
+            "chassisName": self.chassisName,
             "motherboardSn": self.motherboardSn,
             "biosSerialNumber": self.biosSerialNumber,
             "osVersion": self.osVersion,
