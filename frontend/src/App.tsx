@@ -240,19 +240,12 @@ function App() {
       setLoadError(null);
       return true;
     } catch (error) {
-      setEmployees((prev) => prev.filter((employee) => employee.id !== emp.id));
-      setSelectedEmployee((selected) =>
-        selected?.id === emp.id ? null : selected,
-      );
-      setSelectedProfilePicture((selected) =>
-        selected?.id === emp.id ? null : selected,
-      );
       setLoadError(
         error instanceof Error
-          ? `Deleted locally only. Backend sync failed: ${error.message}`
-            : "Deleted locally only. Backend sync failed.",
+          ? `Delete failed. Backend sync failed: ${error.message}`
+          : "Delete failed. Backend sync failed.",
       );
-      return true;
+      return false;
     }
   }, []);
 
