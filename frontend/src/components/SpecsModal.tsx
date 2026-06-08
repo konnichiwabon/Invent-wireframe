@@ -91,6 +91,7 @@ export default function SpecsModal({ employee, onClose }: SpecsModalProps) {
           <div className="modal-section">
             <div className="modal-section-title">⚡ CPU</div>
             <div className="modal-spec-grid">
+              <SpecItem label="CPU Manufacturer" value={employee.cpu.manufacturer} />
               <SpecItem label="CPU Model" value={employee.cpu.model} />
               <SpecItem label="CPU Cores" value={String(employee.cpu.cores)} />
             </div>

@@ -144,6 +144,7 @@ def optional_list(payload: dict[str, Any], field: str) -> list[object]:
 
 def normalize_cpu(payload: dict[str, Any]) -> dict[str, object]:
     return {
+        "manufacturer": optional_string(payload, "manufacturer"),
         "model": optional_string(payload, "model"),
         "cores": optional_int(payload, "cores"),
     }

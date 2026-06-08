@@ -3,7 +3,7 @@ from django.db import models
 
 
 def default_cpu() -> dict[str, object]:
-    return {"model": "", "cores": 0}
+    return {"manufacturer": "", "model": "", "cores": 0}
 
 
 def default_network() -> dict[str, object]:
@@ -131,6 +131,7 @@ class CpuSpec(models.Model):
         primary_key=True,
         related_name="cpu_spec",
     )
+    manufacturer = models.CharField(max_length=255, default="", blank=True)
     model = models.CharField(max_length=255, default="", blank=True)
     cores = models.PositiveIntegerField(default=0)
 
@@ -138,7 +139,7 @@ class CpuSpec(models.Model):
         return f"CPU for {self.asset_id}"
 
     def to_dict(self) -> dict[str, object]:
-        return {"model": self.model, "cores": self.cores}
+        return {"manufacturer": self.manufacturer, "model": self.model, "cores": self.cores}
 
 
 class RamSpec(models.Model):

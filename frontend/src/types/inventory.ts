@@ -1,6 +1,7 @@
 // ===== Hardware Inventory Types =====
 
 export interface CpuSpec {
+  manufacturer: string;
   model: string;
   cores: number;
 }

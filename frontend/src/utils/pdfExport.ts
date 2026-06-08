@@ -21,7 +21,7 @@ export function exportInventoryToPDF(employees: Employee[]) {
   const head = [[
     'Department', 'Email', 'Username', 'Omada Name',
     'Hostname', 'MAC Address', 'DHCP?', 'Current IP', 'Port Number',
-    'CPU Model', 'Cores',
+    'CPU Manufacturer', 'CPU Model', 'Cores',
     'RAM SN', 'RAM Model', 'Speed', 'Total Memory',
     'Storage SN', 'Storage Type', 'Capacity',
     'GPU Serial', 'GPU Manufacturer', 'GPU Model', 'GPU RAM',
@@ -57,6 +57,7 @@ export function exportInventoryToPDF(employees: Employee[]) {
       emp.network.currentIp,
       emp.network.portNumber,
       
+      emp.cpu.manufacturer,
       emp.cpu.model,
       emp.cpu.cores.toString(),
       

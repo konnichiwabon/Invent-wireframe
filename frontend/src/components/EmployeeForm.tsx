@@ -125,7 +125,7 @@ function newEmployee(): Employee {
     profilePictureUploadData: '',
     avatarColor: randomAvatarColor(),
     dateAsOf: new Date().toISOString().slice(0, 10),
-    cpu: { model: '', cores: 0 },
+    cpu: { manufacturer: '', model: '', cores: 0 },
     ram: [{ ...blankRam }],
     gpu: [{ ...blankGpu }],
     storage: [{ ...blankStorage }],
@@ -147,6 +147,10 @@ function cloneEmployeeForForm(employee: Employee): Employee {
   return {
     ...employee,
     email: employee.email ?? '',
+    cpu: {
+      ...employee.cpu,
+      manufacturer: employee.cpu.manufacturer ?? '',
+    },
     system: {
       ...employee.system,
       chassisName: employee.system.chassisName ?? '',
@@ -434,6 +438,7 @@ export default function EmployeeForm({ employee, onSave, onDelete, onClose }: Em
           <fieldset className="form-section">
             <legend className="form-section-title">⚡ CPU</legend>
             <div className="form-grid">
+              <FormField label="CPU Manufacturer" value={form.cpu.manufacturer} onChange={(v) => setCpu('manufacturer', v)} />
               <FormField label="CPU Model" value={form.cpu.model} onChange={(v) => setCpu('model', v)} />
               <FormField label="CPU Cores" value={String(form.cpu.cores || '')} onChange={(v) => setCpu('cores', Number(v) || 0)} type="number" />
             </div>

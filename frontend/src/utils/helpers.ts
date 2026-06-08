@@ -75,6 +75,7 @@ export function filterEmployees(
       emp.omadaUsername.toLowerCase().includes(term) ||
       emp.network.hostname.toLowerCase().includes(term) ||
       emp.department.toLowerCase().includes(term) ||
+      emp.cpu.manufacturer.toLowerCase().includes(term) ||
       emp.cpu.model.toLowerCase().includes(term) ||
       emp.network.currentIp.includes(term) ||
       emp.network.macAddress.toLowerCase().includes(term) ||
