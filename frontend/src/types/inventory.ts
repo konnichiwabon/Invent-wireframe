@@ -41,11 +41,15 @@ export interface NetworkSpec {
 
 export interface PeripheralSpec {
   keyboardBrand: string;
+  keyboardSerialNumber: string;
   mouseBrand: string;
+  mouseSerialNumber: string;
   monitor: string;
+  monitorSerialNumber: string;
 }
 
 export interface SystemSpec {
+  chassisName: string;
   motherboardSn: string;
   biosSerialNumber: string;
   osVersion: string;

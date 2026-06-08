@@ -17,11 +17,18 @@ def default_network() -> dict[str, object]:
 
 
 def default_peripherals() -> dict[str, str]:
-    return {"keyboardBrand": "", "mouseBrand": "", "monitor": ""}
+    return {
+        "keyboardBrand": "",
+        "keyboardSerialNumber": "",
+        "mouseBrand": "",
+        "mouseSerialNumber": "",
+        "monitor": "",
+        "monitorSerialNumber": "",
+    }
 
 
 def default_system() -> dict[str, str]:
-    return {"motherboardSn": "", "biosSerialNumber": "", "osVersion": ""}
+    return {"chassisName": "", "motherboardSn": "", "biosSerialNumber": "", "osVersion": ""}
 
 
 class Asset(models.Model):
@@ -235,8 +242,11 @@ class PeripheralSpec(models.Model):
         related_name="peripheral_spec",
     )
     keyboardBrand = models.CharField(max_length=255, default="", blank=True)
+    keyboardSerialNumber = models.CharField(max_length=255, default="", blank=True)
     mouseBrand = models.CharField(max_length=255, default="", blank=True)
+    mouseSerialNumber = models.CharField(max_length=255, default="", blank=True)
     monitor = models.CharField(max_length=255, default="", blank=True)
+    monitorSerialNumber = models.CharField(max_length=255, default="", blank=True)
 
     def __str__(self) -> str:
         return f"Peripherals for {self.asset_id}"
@@ -244,8 +254,11 @@ class PeripheralSpec(models.Model):
     def to_dict(self) -> dict[str, object]:
         return {
             "keyboardBrand": self.keyboardBrand,
+            "keyboardSerialNumber": self.keyboardSerialNumber,
             "mouseBrand": self.mouseBrand,
+            "mouseSerialNumber": self.mouseSerialNumber,
             "monitor": self.monitor,
+            "monitorSerialNumber": self.monitorSerialNumber,
         }
 
 
@@ -256,6 +269,7 @@ class SystemSpec(models.Model):
         primary_key=True,
         related_name="system_spec",
     )
+    chassisName = models.CharField(max_length=255, default="", blank=True)
     motherboardSn = models.CharField(max_length=255, default="", blank=True)
     biosSerialNumber = models.CharField(max_length=255, default="", blank=True)
     osVersion = models.CharField(max_length=255, default="", blank=True)
@@ -265,6 +279,7 @@ class SystemSpec(models.Model):
 
     def to_dict(self) -> dict[str, object]:
         return {
+            "chassisName": self.chassisName,
             "motherboardSn": self.motherboardSn,
             "biosSerialNumber": self.biosSerialNumber,
             "osVersion": self.osVersion,

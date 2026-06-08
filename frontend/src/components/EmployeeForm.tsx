@@ -131,8 +131,15 @@ function newEmployee(): Employee {
     storage: [{ ...blankStorage }],
     devicePhotos: [],
     network: { hostname: '', macAddress: '', dhcp: true, currentIp: '', portNumber: '' },
-    peripherals: { keyboardBrand: '', mouseBrand: '', monitor: '' },
-    system: { motherboardSn: '', biosSerialNumber: '', osVersion: '' },
+    peripherals: {
+      keyboardBrand: '',
+      keyboardSerialNumber: '',
+      mouseBrand: '',
+      mouseSerialNumber: '',
+      monitor: '',
+      monitorSerialNumber: '',
+    },
+    system: { chassisName: '', motherboardSn: '', biosSerialNumber: '', osVersion: '' },
   };
 }
 
@@ -140,6 +147,16 @@ function cloneEmployeeForForm(employee: Employee): Employee {
   return {
     ...employee,
     email: employee.email ?? '',
+    system: {
+      ...employee.system,
+      chassisName: employee.system.chassisName ?? '',
+    },
+    peripherals: {
+      ...employee.peripherals,
+      keyboardSerialNumber: employee.peripherals.keyboardSerialNumber ?? '',
+      mouseSerialNumber: employee.peripherals.mouseSerialNumber ?? '',
+      monitorSerialNumber: employee.peripherals.monitorSerialNumber ?? '',
+    },
     ram: employee.ram.map((r) => ({ ...r })),
     gpu: employee.gpu.map((g) => ({ ...g })),
     storage: employee.storage.map((s) => ({ ...s })),
@@ -406,6 +423,7 @@ export default function EmployeeForm({ employee, onSave, onDelete, onClose }: Em
           <fieldset className="form-section">
             <legend className="form-section-title">🔧 System</legend>
             <div className="form-grid">
+              <FormField label="Case" value={form.system.chassisName} onChange={(v) => setSystem('chassisName', v)} />
               <FormField label="Motherboard SN" value={form.system.motherboardSn} onChange={(v) => setSystem('motherboardSn', v)} />
               <FormField label="BIOS Serial Number" value={form.system.biosSerialNumber} onChange={(v) => setSystem('biosSerialNumber', v)} />
               <FormField label="OS Version" value={form.system.osVersion} onChange={(v) => setSystem('osVersion', v)} />
@@ -525,8 +543,11 @@ export default function EmployeeForm({ employee, onSave, onDelete, onClose }: Em
             <legend className="form-section-title">🖱️ Peripherals</legend>
             <div className="form-grid">
               <FormField label="Keyboard Brand" value={form.peripherals.keyboardBrand} onChange={(v) => setPeripherals('keyboardBrand', v)} />
+              <FormField label="Keyboard Serial Number" value={form.peripherals.keyboardSerialNumber} onChange={(v) => setPeripherals('keyboardSerialNumber', v)} />
               <FormField label="Mouse Brand" value={form.peripherals.mouseBrand} onChange={(v) => setPeripherals('mouseBrand', v)} />
+              <FormField label="Mouse Serial Number" value={form.peripherals.mouseSerialNumber} onChange={(v) => setPeripherals('mouseSerialNumber', v)} />
               <FormField label="Monitor" value={form.peripherals.monitor} onChange={(v) => setPeripherals('monitor', v)} />
+              <FormField label="Monitor Serial Number" value={form.peripherals.monitorSerialNumber} onChange={(v) => setPeripherals('monitorSerialNumber', v)} />
             </div>
           </fieldset>
 

@@ -25,8 +25,8 @@ export function exportInventoryToPDF(employees: Employee[]) {
     'RAM SN', 'RAM Model', 'Speed', 'Total Memory',
     'Storage SN', 'Storage Type', 'Capacity',
     'GPU Serial', 'GPU Manufacturer', 'GPU Model', 'GPU RAM',
-    'Motherboard SN', 'BIOS SN', 'OS Version',
-    'Keyboard', 'Mouse', 'Monitor',
+    'Case', 'Motherboard SN', 'BIOS SN', 'OS Version',
+    'Keyboard', 'Keyboard SN', 'Mouse', 'Mouse SN', 'Monitor', 'Monitor SN',
     'Date (as of)'
   ]];
 
@@ -74,13 +74,17 @@ export function exportInventoryToPDF(employees: Employee[]) {
       gpuModel,
       gpuRam,
       
+      emp.system.chassisName,
       emp.system.motherboardSn,
       emp.system.biosSerialNumber,
       emp.system.osVersion,
       
       emp.peripherals.keyboardBrand,
+      emp.peripherals.keyboardSerialNumber,
       emp.peripherals.mouseBrand,
+      emp.peripherals.mouseSerialNumber,
       emp.peripherals.monitor,
+      emp.peripherals.monitorSerialNumber,
       
       formatDate(emp.dateAsOf)
     ];

@@ -110,6 +110,10 @@ export default function InventoryCard({
           <span>HARDWARE</span>
         </div>
         <div className="spec-row">
+          <span className="spec-label">Case</span>
+          <span className="spec-value">{employee.system.chassisName || '-'}</span>
+        </div>
+        <div className="spec-row">
           <span className="spec-label">CPU</span>
           <span className="spec-value">{employee.cpu.model.split(' ').slice(0, 3).join(' ')}</span>
         </div>

@@ -45,6 +45,16 @@ function normalizeEmployee(employee: Employee): Employee {
     ...employee,
     email: employee.email ?? "",
     devicePhotos: employee.devicePhotos ?? [],
+    peripherals: {
+      ...employee.peripherals,
+      keyboardSerialNumber: employee.peripherals.keyboardSerialNumber ?? "",
+      mouseSerialNumber: employee.peripherals.mouseSerialNumber ?? "",
+      monitorSerialNumber: employee.peripherals.monitorSerialNumber ?? "",
+    },
+    system: {
+      ...employee.system,
+      chassisName: employee.system.chassisName ?? "",
+    },
   };
 }
 

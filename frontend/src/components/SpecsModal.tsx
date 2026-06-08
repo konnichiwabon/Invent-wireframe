@@ -80,6 +80,7 @@ export default function SpecsModal({ employee, onClose }: SpecsModalProps) {
           <div className="modal-section">
             <div className="modal-section-title">🔧 System</div>
             <div className="modal-spec-grid">
+              <SpecItem label="Case" value={employee.system.chassisName} />
               <SpecItem label="Motherboard SN" value={employee.system.motherboardSn} mono />
               <SpecItem label="BIOS Serial Number" value={employee.system.biosSerialNumber} mono />
               <SpecItem label="OS Version" value={employee.system.osVersion} wide />
@@ -159,8 +160,11 @@ export default function SpecsModal({ employee, onClose }: SpecsModalProps) {
             <div className="modal-section-title">🖱️ Peripherals</div>
             <div className="modal-spec-grid">
               <SpecItem label="Keyboard Brand" value={employee.peripherals.keyboardBrand} />
+              <SpecItem label="Keyboard Serial Number" value={employee.peripherals.keyboardSerialNumber} mono />
               <SpecItem label="Mouse Brand" value={employee.peripherals.mouseBrand} />
+              <SpecItem label="Mouse Serial Number" value={employee.peripherals.mouseSerialNumber} mono />
               <SpecItem label="Monitor" value={employee.peripherals.monitor} wide />
+              <SpecItem label="Monitor Serial Number" value={employee.peripherals.monitorSerialNumber} mono wide />
             </div>
           </div>
 

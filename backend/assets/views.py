@@ -188,13 +188,17 @@ def normalize_network(payload: dict[str, Any]) -> dict[str, object]:
 def normalize_peripherals(payload: dict[str, Any]) -> dict[str, object]:
     return {
         "keyboardBrand": optional_string(payload, "keyboardBrand"),
+        "keyboardSerialNumber": optional_string(payload, "keyboardSerialNumber"),
         "mouseBrand": optional_string(payload, "mouseBrand"),
+        "mouseSerialNumber": optional_string(payload, "mouseSerialNumber"),
         "monitor": optional_string(payload, "monitor"),
+        "monitorSerialNumber": optional_string(payload, "monitorSerialNumber"),
     }
 
 
 def normalize_system(payload: dict[str, Any]) -> dict[str, object]:
     return {
+        "chassisName": optional_string(payload, "chassisName"),
         "motherboardSn": optional_string(payload, "motherboardSn"),
         "biosSerialNumber": optional_string(payload, "biosSerialNumber"),
         "osVersion": optional_string(payload, "osVersion"),
